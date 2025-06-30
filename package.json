@@ -5,7 +5,7 @@
   "icon": "img/icon.png",
   "version": "1.0.0",
   "publisher": "SunlitSpace542",
-  "repository": "",
+  "repository": "https://github.com/Sunlitspace542/65816-superfx-asm-argonaut-vscode",
   "engines": {
     "vscode": "^1.101.0"
   },

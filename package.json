@@ -1,5 +1,5 @@
 {
-  "name": "65816-superfx-asm-argonautsyntax",
+  "name": "65816-superfx-asm-argonaut-vscode",
   "displayName": "65816 and Super FX Assembly (Argonaut Syntax)",
   "description": "65816 + Super FX ASM language support with Argonaut Software assembler family directives",
   "icon": "img/icon.png",

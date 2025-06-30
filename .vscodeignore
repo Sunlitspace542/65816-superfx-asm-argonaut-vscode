@@ -1,0 +1,5 @@
+.gitignore
+.yarnrc
+.vsix
+**/*.cmd
+**/*.zip

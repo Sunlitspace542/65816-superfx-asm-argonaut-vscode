@@ -1,0 +1,64 @@
+{
+  "name": "65816-superfx-asm-argonautsyntax",
+  "displayName": "65816 and Super FX Assembly (Argonaut Syntax)",
+  "description": "65816 + Super FX ASM language support with Argonaut Software assembler family directives",
+  "icon": "img/icon.png",
+  "version": "1.0.0",
+  "publisher": "SunlitSpace542",
+  "repository": "",
+  "engines": {
+    "vscode": "^1.101.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+    "contributes": {
+        "languages": [
+        {
+            "id": "arg65816",
+            "aliases": ["65816 Assembly (Argonaut)", "arg65816"],
+            "extensions": [".asm",".inc",".ext"],
+            "configuration": "./language-configuration.json"
+        },
+        {
+            "id": "argsuperfx",
+            "aliases": ["Super FX Assembly (Argonaut)", "argsuperfx"],
+            "extensions": [".mc"],
+            "configuration": "./language-configuration.json"
+        }
+        ],
+        "grammars": [
+        {
+            "language": "arg65816",
+            "scopeName": "source.asm.arg65816",
+            "path": "./syntaxes/arg65816.tmLanguage.json"
+        },
+        {
+            "language": "argsuperfx",
+            "scopeName": "source.asm.argsuperfx",
+            "path": "./syntaxes/argsuperfx.tmLanguage.json"
+        }
+    ]
+    },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.101.0",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "20.x",
+    "@typescript-eslint/eslint-plugin": "^8.31.1",
+    "@typescript-eslint/parser": "^8.31.1",
+    "eslint": "^9.25.1",
+    "typescript": "^5.8.3",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.5.2"
+  }
+}

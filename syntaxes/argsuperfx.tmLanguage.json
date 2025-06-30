@@ -1,0 +1,150 @@
+{
+  "fileTypes": [
+    "asm",
+    "inc",
+    "ext"
+  ],
+  "name": "Super FX Assembly (Argonaut)",
+  "scopeName": "source.asm.argsuperfx",
+  "uuid": "2606cd88-3cfc-4f22-abd9-60cc3c551ac7",
+  "patterns": [
+    {
+      "include": "#conditionals"
+    },
+    {
+      "comment": "Comment",
+      "match": ";(.)*",
+      "name": "comment.line"
+    },
+    {
+      "comment": "Command Seperator",
+      "match": "[\\s]:[\\s]",
+      "name": "keyword.sasm_argsfx.command.concatenate"
+    },
+    {
+      "comment": "Label Reference",
+      "name": "SASM/ARSGFX.branch.label",
+      "match": "\\b(BCC|BCS|BEQ|BGE|BIC|BLT|BMI|BNE|BPL|BRA|BVC|BVS|JAL|JMP|LJMP)\\b[\\s]+([a-zA-Z0-9_\\\\@]+)",
+      "captures": {
+        "1": {
+          "name": "keyword.mnemonic"
+        },
+        "2": {
+          "name": "label.sasm_argsfx.label.reference"
+        }
+      }
+    },
+    {
+      "comment": "Sub-Label Reference",
+      "name": "label.sasm_argsfx.subbranch.label",
+      "match": "\\b(BCC|BCS|BEQ|BGE|BIC|BLT|BMI|BNE|BPL|BRA|BVC|BVS|JAL|JMP|LJMP)\\b[\\s]+([\\.][a-zA-Z0-9_\\\\@]+)",
+      "captures": {
+        "1": {
+          "name": "keyword.mnemonic"
+        },
+        "2": {
+          "name": "label.sasm_argsfx.sublabel.reference"
+        }
+      }
+    },
+    {
+      "comment": "Mnemonics",
+      "match": "\\b(?i:ADD|ADC|ALT1|ALT2|ALT3|AND|ASR|BCC|BCS|BEQ|BGE|BIC|BLT|BMI|BNE|BPL|BRA|BVC|BVS|CACHE|CMODE|CMP|COLOR|COLOUR|DEC|DIV2|FMULT|FROM|GETB|GETBH|GETBL|GETBS|GETC|HIB|IBT|INC|IWT|JAL|JMP|LDB|LDW|LEA|LINK|LJMP|LM|LMS|LMULT|LOB|LOOP|LSR|MERGE|MOVE|MOVEB|MOVES|MOVEW|MULT|NOP|NOT|OR|PLOT|POP|PUSH|RAMB|RET|RTS|ROL|ROMB|ROR|RPIX|SBC|SBK|SEX|SM|SMS|STB|STOP|STW|SUB|SWAP|TO|UMULT|WITH|XOR)(.[b|w|v])?\\b",
+      "name": "keyword.mnemonic"
+    },
+    {
+      "comment": "Preprocessor",
+      "match": "(?i)\\b(ANSI|CHECKMAC|DATE|DB|DW|DS|DEFEND|DEFERROR|ERROR_WRONG_MODE|ERROR|ERRO|DEFS|ELSEIF|END|ENDC|ENDM|ENDR|EQU|EQUR|EXPR|EXTERN|FABCARD|FAIL|FOPEN|FCLOSE|GETENV|GETHEAP|IFEQ|IFNE|IFGE|IFLE|IFGT|IFLT|IFD|IFND|IFC|IFNC|IFV|IFNV|IFS|IFNS|IFFE|IFFNE|INCBIN|INCCOL|INCDIR|INCLUDE|IRP|IRS|LIST|LOCAL|LONGA|LONGI|LOWER|MACRO|MARIO|M_ERROR|MEXIT|NARG|ON|OFF|ORG|OUTPUT|PRINTF|PRTF|PUBLIC|ROLS|RUN|RELEASE|REPT|SEND|SETDBR|SHORTA|SHORTI|SICE|STRING|STRLEN|SUBSTR|SUPPRESS|TIME|TYPE|UPPER|WARN|WRITE)\\b",
+      "name": "keyword.sasm_argsfx.asm"
+    },
+    {
+      "comment": "Registers",
+      "match": "\\b(?i:R0|R1|R2|R3|R4|R5|R6|R7|R8|R9|R10|R11|R12|R13|R14|R15|SP|LR|PC)\\b",
+      "name": "variable.sasm_argsfx.storage.register"
+    },
+    {
+      "comment": "Address",
+      "match": "[^#]\\$[a-fA-F0-9]+",
+      "name": "constant.sasm_argsfx.numeric.address"
+    },
+    {
+      "comment": "Hex Value",
+      "match": "#\\$[a-fA-F0-9]+",
+      "name": "constant.sasm_argsfx.numeric.hexvalue"
+    },
+    {
+      "comment": "Decimal Value",
+      "match": "#[0-9]+",
+      "name": "constant.sasm_argsfx.numeric.decvalue"
+    },
+    {
+      "comment": "Binary Value",
+      "match": "%[0-1]+",
+      "name": "constant.sasm_argsfx.numeric.binvalue"
+    },
+    {
+      "comment": "Value",
+      "match": "\\b[0-9]+\\b",
+      "name": "constant.sasm_argsfx.numeric.dec"
+    },
+    {
+      "comment": "Label",
+      "match": "^[\\s]*([a-zA-Z0-9_\\\\@]*):",
+      "name": "label.sasm_argsfx.label"
+    },
+    {
+      "comment": "Sub-Label",
+      "match": "^[\\s]*[\\.]([a-zA-Z0-9_\\\\@]*)",
+      "name": "label.sasm_argsfx.sublabel"
+    },
+    {
+      "comment": "String",
+      "match": "\"[^\"]*\"",
+      "name": "string.quoted.double"
+    },
+    {
+      "comment": "String",
+      "match": "'[^'']*'",
+      "name": "string.quoted.single"
+    },
+    {
+    "comment": "Angle-bracket String",
+    "match": "<[^>]*>",
+    "name": "string.quoted.angle"
+    }
+    ],
+    "repository": {
+        "conditionals": {
+            
+        "patterns": [
+            {
+            "comment": "Conditional Assembly Blocks",
+            "match": "(?i)\\bIF(?:EQ|NE|GE|LE|GT|LT|D|ND|C|NC|V|NV|S|NS|FE|FNE)\\b",
+            "name": "keyword.control.conditional.begin.argsuperfx"
+            },
+            {
+            "match": "(?i)\\bELSEIF\\b",
+            "name": "keyword.control.conditional.elseif.argsuperfx"
+            },
+            {
+            "match": "(?i)\\bENDC\\b",
+            "name": "keyword.control.conditional.end.argsuperfx"
+            },
+            {
+            "begin": "(?i)\\b(IF(?:EQ|NE|GE|LE|GT|LT|D|ND|C|NC|V|NV|S|NS|FE|FNE))\\b",
+            "beginCaptures": {
+                "1": {
+                "name": "keyword.control.conditional.begin.argsuperfx"
+                }
+            },
+            "end": "(?i)\\bENDC\\b",
+            "endCaptures": {
+                "0": {
+                "name": "keyword.control.conditional.end.argsuperfx"
+                }
+            }
+            }
+        ]
+        }
+    }
+    }

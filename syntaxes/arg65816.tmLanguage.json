@@ -1,0 +1,155 @@
+{
+  "fileTypes": [
+    "asm",
+    "inc",
+    "ext"
+  ],
+  "name": "65816 Assembly (Argonaut)",
+  "scopeName": "source.asm.arg65816",
+  "uuid": "3d73106a-116c-4957-93e0-915478746edc",
+  "patterns": [
+    {
+      "include": "#conditionals"
+    },
+    {
+      "comment": "Comment",
+      "match": ";(.)*",
+      "name": "comment.line"
+    },
+    {
+      "comment": "Command Seperator",
+      "match": "[\\s]:[\\s]",
+      "name": "keyword.sasm_argsfx.command.concatenate"
+    },
+    {
+      "comment": "SNES Directives",
+      "match": "\\b(cop|brk|abort|nmi|irq|COP|BRK|ABORT|NMI|IRQ)\\b",
+      "name": "keyword.sasm_argsfx.snes"
+    },
+    {
+      "comment": "Label Reference",
+      "name": "SASM/ARSGFX.branch.label",
+      "match": "\\b(BCC|BCS|BEQ|BMI|BNE|BPL|BRA|BRL|BVC|BVS|JMP|JML|JSR|JSL)\\b[\\s]+([a-zA-Z0-9_\\\\@]+)",
+      "captures": {
+        "1": {
+          "name": "keyword.mnemonic"
+        },
+        "2": {
+          "name": "label.sasm_argsfx.label.reference"
+        }
+      }
+    },
+    {
+      "comment": "Sub-Label Reference",
+      "name": "label.sasm_argsfx.subbranch.label",
+      "match": "\\b(BCC|BCS|BEQ|BMI|BNE|BPL|BRA|BRL|BVC|BVS|JMP|JML|JSR|JSL)\\b[\\s]+([\\.][a-zA-Z0-9_\\\\@]+)",
+      "captures": {
+        "1": {
+          "name": "keyword.mnemonic"
+        },
+        "2": {
+          "name": "label.sasm_argsfx.sublabel.reference"
+        }
+      }
+    },
+    {
+      "comment": "Mnemonics",
+      "match": "\\b(adc|and|asl|bcc|bcs|beq|bit|bmi|bne|bpl|bra|brk|brl|bvc|bvs|clc|cld|cli|clv|cmp|cpx|cpy|cop|dc|dec|dex|dey|eor|inc|inx|iny|jmp|jml|jsr|jsl|lda|ldx|ldy|lsr|mvn|mvp|nop|ora|pea|pei|per|pha|phb|phd|phk|php|phx|phy|pla|plb|pld|plp|plx|ply|rep|rol|ror|rti|rts|rtl|sbc|sec|sed|sei|sep|sta|stx|sty|stp|stz|swa|tax|tay|tcd|tcs|tdc|tdc|tdx|txa|txs|txy|tya|tyx|trb|tsb|wai|wdm|xba|xce|ADC|AND|ASL|BCC|BCS|BEQ|BIT|BMI|BNE|BPL|BRA|BRK|BRL|BVC|BVS|CLC|CLD|CLI|CLV|CMP|CPX|CPY|COP|DC|DEC|DEX|DEY|EOR|INC|INX|INY|JMP|JML|JSR|JSL|LDA|LDX|LDY|LSR|MVN|MVP|NOP|ORA|PEA|PEI|PER|PHA|PHB|PHD|PHK|PHP|PHX|PHY|PLA|PLB|PLD|PLP|PLX|PLY|REP|ROL|ROR|RTI|RTS|RTL|SBC|SEC|SED|SEI|SEP|STA|STX|STY|STP|STZ|SWA|TAX|TAY|TCD|TCS|TDC|TDC|TDX|TXA|TXS|TXY|TYA|TYX|TRB|TSB|WAI|WDM|XBA|XCE)(.[b|w|v])?\\b",
+      "name": "keyword.mnemonic"
+    },
+    {
+      "comment": "Preprocessor",
+      "match": "(?i)\\b(ANSI|CHECKMAC|DATE|DB|DW|DS|DEFEND|DEFERROR|ERROR_WRONG_MODE|ERROR|ERRO|DEFS|ELSEIF|END|ENDC|ENDM|ENDR|EQU|EQUR|EXPR|EXTERN|FABCARD|FAIL|FOPEN|FCLOSE|GETENV|GETHEAP|IFEQ|IFNE|IFGE|IFLE|IFGT|IFLT|IFD|IFND|IFC|IFNC|IFV|IFNV|IFS|IFNS|IFFE|IFFNE|INCBIN|INCCOL|INCDIR|INCLUDE|IRP|IRS|LIST|LOCAL|LONGA|LONGI|LOWER|MACRO|MARIO|M_ERROR|MEXIT|NARG|ON|OFF|ORG|OUTPUT|PRINTF|PRTF|PUBLIC|ROLS|RUN|RELEASE|REPT|SEND|SETDBR|SHORTA|SHORTI|SICE|STRING|STRLEN|SUBSTR|SUPPRESS|TIME|TYPE|UPPER|WARN|WRITE)\\b",
+      "name": "keyword.sasm_argsfx.asm"
+    },
+    {
+      "comment": "Registers",
+      "match": "\\b(a|x|y|A|X|Y)\\b",
+      "name": "variable.sasm_argsfx.storage.register"
+    },
+    {
+      "comment": "Address",
+      "match": "[^#]\\$[a-fA-F0-9]+",
+      "name": "constant.sasm_argsfx.numeric.address"
+    },
+    {
+      "comment": "Hex Value",
+      "match": "#\\$[a-fA-F0-9]+",
+      "name": "constant.sasm_argsfx.numeric.hexvalue"
+    },
+    {
+      "comment": "Decimal Value",
+      "match": "#[0-9]+",
+      "name": "constant.sasm_argsfx.numeric.decvalue"
+    },
+    {
+      "comment": "Binary Value",
+      "match": "%[0-1]+",
+      "name": "constant.sasm_argsfx.numeric.binvalue"
+    },
+    {
+      "comment": "Value",
+      "match": "\\b[0-9]+\\b",
+      "name": "constant.sasm_argsfx.numeric.dec"
+    },
+    {
+      "comment": "Label",
+      "match": "^[\\s]*([a-zA-Z0-9_\\\\@]*):",
+      "name": "label.sasm_argsfx.label"
+    },
+    {
+      "comment": "Sub-Label",
+      "match": "^[\\s]*[\\.]([a-zA-Z0-9_\\\\@]*)",
+      "name": "label.sasm_argsfx.sublabel"
+    },
+    {
+      "comment": "String",
+      "match": "\"[^\"]*\"",
+      "name": "string.quoted.double"
+    },
+    {
+      "comment": "String",
+      "match": "'[^'']*'",
+      "name": "string.quoted.single"
+    },
+    {
+    "comment": "Angle-bracket String",
+    "match": "<[^>]*>",
+    "name": "string.quoted.angle"
+    }
+    ],
+    "repository": {
+        "conditionals": {
+            
+        "patterns": [
+            {
+            "comment": "Conditional Assembly Blocks",
+            "match": "(?i)\\bIF(?:EQ|NE|GE|LE|GT|LT|D|ND|C|NC|V|NV|S|NS|FE|FNE)\\b",
+            "name": "keyword.control.conditional.begin.arg65816"
+            },
+            {
+            "match": "(?i)\\bELSEIF\\b",
+            "name": "keyword.control.conditional.elseif.arg65816"
+            },
+            {
+            "match": "(?i)\\bENDC\\b",
+            "name": "keyword.control.conditional.end.arg65816"
+            },
+            {
+            "begin": "(?i)\\b(IF(?:EQ|NE|GE|LE|GT|LT|D|ND|C|NC|V|NV|S|NS|FE|FNE))\\b",
+            "beginCaptures": {
+                "1": {
+                "name": "keyword.control.conditional.begin.arg65816"
+                }
+            },
+            "end": "(?i)\\bENDC\\b",
+            "endCaptures": {
+                "0": {
+                "name": "keyword.control.conditional.end.arg65816"
+                }
+            }
+            }
+        ]
+        }
+    }
+    }

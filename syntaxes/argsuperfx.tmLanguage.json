@@ -24,7 +24,7 @@
     {
       "comment": "Label Reference",
       "name": "SASM/ARSGFX.branch.label",
-      "match": "\\b(BCC|BCS|BEQ|BGE|BIC|BLT|BMI|BNE|BPL|BRA|BVC|BVS|JAL|JMP|LJMP)\\b[\\s]+([a-zA-Z0-9_\\\\@]+)",
+      "match": "\\b(BCC|BCS|BEQ|BGE|BLT|BMI|BNE|BPL|BRA|BVC|BVS|JMP|LJMP)\\b[\\s]+([a-zA-Z0-9_\\\\@]+)",
       "captures": {
         "1": {
           "name": "keyword.mnemonic"
@@ -37,7 +37,7 @@
     {
       "comment": "Sub-Label Reference",
       "name": "label.sasm_argsfx.subbranch.label",
-      "match": "\\b(BCC|BCS|BEQ|BGE|BIC|BLT|BMI|BNE|BPL|BRA|BVC|BVS|JAL|JMP|LJMP)\\b[\\s]+([\\.][a-zA-Z0-9_\\\\@]+)",
+      "match": "\\b(BCC|BCS|BEQ|BGE|BLT|BMI|BNE|BPL|BRA|BVC|BVS|JMP|LJMP)\\b[\\s]+([\\.][a-zA-Z0-9_\\\\@]+)",
       "captures": {
         "1": {
           "name": "keyword.mnemonic"

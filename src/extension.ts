@@ -96,8 +96,22 @@ provideHover(document, position) {
   const range = document.getWordRangeAtPosition(position);
   let word = document.getText(range).toUpperCase();
 
-  // Attempt to find the instruction directly
-  let key = Object.keys(helpData).find(k => k.startsWith(word));
+    // Branch aliases that map to a shared entry
+    const branchGroup = [
+    "BCC", "BCS", "BEQ", "BGE", "BLT", "BMI",
+    "BNE", "BPL", "BRA", "BVC", "BVS"
+    ];
+
+    let lookupWord = word;
+
+    // Normalize to shared entry for branches
+    if (branchGroup.includes(word)) {
+    lookupWord = "B(CC,CS,EQ,NE,GE,LT,MI,PL,RA,VC,VS) BRANCH CONDITIONALLY.";
+    }
+
+    // Try finding a matching help key
+    let key = Object.keys(helpData).find(k => k.startsWith(lookupWord));
+
 
   // Fallback: if word starts with 'M', try without it
   if (!key && word.startsWith('M')) {

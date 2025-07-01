@@ -115,7 +115,6 @@
     ],
     "repository": {
         "conditionals": {
-            
         "patterns": [
             {
             "comment": "Conditional Assembly Blocks",
@@ -129,20 +128,6 @@
             {
             "match": "(?i)\\bENDC\\b",
             "name": "keyword.control.conditional.end.argsuperfx"
-            },
-            {
-            "begin": "(?i)\\b(IF(?:EQ|NE|GE|LE|GT|LT|D|ND|C|NC|V|NV|S|NS|FE|FNE))\\b",
-            "beginCaptures": {
-                "1": {
-                "name": "keyword.control.conditional.begin.argsuperfx"
-                }
-            },
-            "end": "(?i)\\bENDC\\b",
-            "endCaptures": {
-                "0": {
-                "name": "keyword.control.conditional.end.argsuperfx"
-                }
-            }
             }
         ]
         }

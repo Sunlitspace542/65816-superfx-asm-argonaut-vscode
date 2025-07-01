@@ -113,8 +113,8 @@
       "name": "string.quoted.single"
     },
     {
-    "comment": "Angle-bracket String",
-    "match": "<[^>]*>",
+    "comment": "Angle-bracket String (after space/comma, allow internal whitespace)",
+    "match": "(?<=\\s|,)\\s*<[^<>\\n]+?>",
     "name": "string.quoted.angle"
     }
     ],

@@ -49,7 +49,7 @@
     },
     {
       "comment": "Mnemonics",
-      "match": "\\b(?i:ADD|ADC|ALT1|ALT2|ALT3|AND|ASR|BCC|BCS|BEQ|BGE|BIC|BLT|BMI|BNE|BPL|BRA|BVC|BVS|CACHE|CMODE|CMP|COLOR|COLOUR|DEC|DIV2|FMULT|FROM|GETB|GETBH|GETBL|GETBS|GETC|HIB|IBT|INC|IWT|JAL|JMP|LDB|LDW|LEA|LINK|LJMP|LM|LMS|LMULT|LOB|LOOP|LSR|MERGE|MOVE|MOVEB|MOVES|MOVEW|MULT|NOP|NOT|OR|PLOT|POP|PUSH|RAMB|RET|RTS|ROL|ROMB|ROR|RPIX|SBC|SBK|SEX|SM|SMS|STB|STOP|STW|SUB|SWAP|TO|UMULT|WITH|XOR)(.[b|w|v])?\\b",
+      "match": "\\b(?i:ADD|ADC|ALT1|ALT2|ALT3|AND|ASR|BCC|BCS|BEQ|BGE|BIC|BLT|BMI|BNE|BPL|BRA|BVC|BVS|CACHE|CMODE|CMP|COLOR|COLOUR|DEC|DIV2|FMULT|FROM|GETB|GETBH|GETBL|GETBS|GETC|HIB|IBT|INC|IWT|JAL|JMP|LDB|LDW|LEA|LINK|LJMP|LM|LMS|LMULT|LOB|LOOP|LSR|MERGE|MOVE|MOVEB|MOVES|MOVEW|MULT|NOP|NOT|OR|PLOT|POP|PUSH|RAMB|ROL|ROMB|ROR|RPIX|SBC|SBK|SEX|SM|SMS|STB|STOP|STW|SUB|SWAP|TO|UMULT|WITH|XOR)(.[b|w|v])?\\b",
       "name": "keyword.mnemonic"
     },
     {
@@ -108,8 +108,8 @@
       "name": "string.quoted.single"
     },
     {
-    "comment": "Angle-bracket String",
-    "match": "<[^>]*>",
+    "comment": "Angle-bracket String (after space/comma, allow internal whitespace)",
+    "match": "(?<=\\s|,)\\s*<[^<>\\n]+?>",
     "name": "string.quoted.angle"
     }
     ],

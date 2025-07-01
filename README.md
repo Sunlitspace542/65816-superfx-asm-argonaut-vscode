@@ -5,7 +5,8 @@ It also adds tooltips for Super FX instructions, based on the BRIEF editor macro
 
 Extended from [my Super FX tooltip extension](https://github.com/Sunlitspace542/superfxhelp-vscode).
 
-When a valid Super FX instruction is hovered over, it shows a tooltip box with info about the current instruction.  
+When a valid Super FX instruction with tooltip information present is hovered over, it shows a tooltip box with info about the current instruction.  
+Note that instruction cycle counts mentioned are cycles from cache, not RAM or ROM.  
 
 <img src="./img/example.png" title="" alt="example.png" width="298">
 
@@ -23,6 +24,6 @@ Alternatively on Windows, use ``getmodules.cmd`` to install dependecies, use ``b
 
 ## TODO
 
-- [ ] Super FX: See if the "see also" instructions bit at the end can be made into hyperlinks to those instructions' explanations, or if a sort of interactive help directory thing can be added
-- [ ] Super FX: Add RAM and ROM cycle counts for every instruction (will take a long time)
-- [x] Super FX: Add explanations for branch instructions (left out of the original)
+- [ ] Super FX tooltips: See if the "see also" instructions bit at the end can be made into hyperlinks to those instructions' explanations, or if a sort of interactive help directory thing can be added
+- [ ] Super FX tooltips: Add RAM and ROM cycle counts for every instruction (will take a long time)
+- [x] Super FX tooltips: Add explanations for branch instructions (left out of the original)

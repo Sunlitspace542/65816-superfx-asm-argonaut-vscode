@@ -8,7 +8,7 @@ Extended from [my Super FX tooltip extension](https://github.com/Sunlitspace542/
 When a valid Super FX instruction with tooltip information present is hovered over, it shows a tooltip box with info about the current instruction.  
 Note that instruction cycle counts mentioned are cycles from cache, not RAM or ROM.  
 
-<img src="./img/example.png" title="" alt="example.png" width="298">
+<img src="./img/MARIOHelpExample.png" title="" alt="example.png" width="298">
 
 This extension is currently only compatible with Argonaut's SASM and ARGSFX assemblers.  
 I want to add support for Randal Linden's xAsm assembler in the future, though I may just fork this extension and make that its own thing.  

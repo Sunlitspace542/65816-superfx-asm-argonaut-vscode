@@ -6,7 +6,6 @@ It also adds tooltips for Super FX instructions, based on the BRIEF editor macro
 Extended from [my Super FX tooltip extension](https://github.com/Sunlitspace542/superfxhelp-vscode).
 
 When a valid Super FX instruction with tooltip information present is hovered over, it shows a tooltip box with info about the current instruction.  
-Note that instruction cycle counts mentioned are cycles from cache, not RAM or ROM.  
 
 <img src="./img/MARIOHelpExample.png" title="" alt="example.png" width="298">
 

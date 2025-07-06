@@ -25,5 +25,5 @@ Alternatively on Windows, use ``getmodules.cmd`` to install dependecies, use ``b
 ## TODO
 
 - [ ] Super FX tooltips: See if the "see also" instructions bit at the end can be made into hyperlinks to those instructions' explanations, or if a sort of interactive help directory thing can be added
-- [ ] Super FX tooltips: Add RAM and ROM cycle counts for every instruction (will take a long time)
+- [x] Super FX tooltips: Add RAM and ROM cycle counts for every instruction (will take a long time)
 - [x] Super FX tooltips: Add explanations for branch instructions (left out of the original)

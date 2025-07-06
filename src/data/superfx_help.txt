@@ -10,7 +10,7 @@ data is changed.
 
 -1-------
 
-ALT1	$3d	ALT1	1
+ALT1	$3d	ALT1	3	3	1
 (ALT2,ALT3)
 
 .ALT2 Set alt2 prefix flag.
@@ -24,7 +24,7 @@ data is changed.
 
 --1------
 
-ALT2	$3e	ALT2	1
+ALT2	$3e	ALT2	3	3	1
 (ALT1,ALT3)
 
 .ALT3 Set alt1 and alt2 prefix flags.
@@ -38,7 +38,7 @@ other prefix data is changed.
 
 -11------
 
-ALT3	$3f	ALT3	1
+ALT3	$3f	ALT3	3	3	1
 (ALT1,ALT2)
 
 .ADC Add with carry.
@@ -65,8 +65,8 @@ s - Set if the result is negative, else
 c - Set on adder overflow, else cleared.
 z - Set on zero result, else cleared.
 
-ALT3,ADD	$3f,$5n	ADC #n	2
-ALT1,ADD	$3d,$5n	ADC Rn	2
+ALT3,ADD	$3f,$5n	ADC #n	6	6	2
+ALT1,ADD	$3d,$5n	ADC Rn	6	6	2
 (ADD,INC,WITH,FROM,TO)
 
 .ADD Add binary.
@@ -93,8 +93,8 @@ s - Set if the result is negative, else
 c - Set on adder overflow, else cleared.
 z - Set on zero result, else cleared.
 
-ALT2,ADD	$3e,$5n	ADD #n	2
-ADD	$5n	ADD Rn	1
+ALT2,ADD	$3e,$5n	ADD #n	6	6	2
+ADD	$5n	ADD Rn	3	3	1
 (ADC,INC,WITH,FROM,TO)
 
 .AND Logical AND.
@@ -116,8 +116,8 @@ data is cleared
 s - Set on negative result, else cleared.
 z - Set on zero result, else cleared.
 
-ALT2,AND	$3e,$7n	AND #n	2
-AND	$7n	AND Rn	1
+ALT2,AND	$3e,$7n	AND #n	6	6	2
+AND	$7n	AND Rn	3	3	1
 (BIC,WITH,FROM,TO)
 
 .ASR Arithmetic Shift Right.
@@ -137,7 +137,7 @@ c - Takes prior value of SReg bit 0.
 s - Set on negative result, else cleared.
 z - Set on zero result, else cleared.
 
-ASR	$96	ASR	1
+ASR	$96	ASR	3	3	1
 (LSR,DIV2,ROR,WITH,FROM,TO)
 
 .B(CC,CS,EQ,NE,GE,LT,MI,PL,RA,VC,VS) Branch Conditionally.
@@ -168,13 +168,23 @@ GE           $07 nn     (s xor v)=0 Greater than or equal
 LT           $06 nn     (s xor v)=1 Less than
 MI           $0b nn     s=1         Negative
 PL           $0a nn     s=0         Positive
-RA           $0e nn                 Always
+RA           $05 nn                 Always
 VC           $0e nn     v=0         Overflow clear
 VS           $0f nn     v=1         Overflow set
 
 ---------
 
--	-	-	- 
+BCC	$0c nn	BCC <label>	6	6	2
+BCS	$0d nn	BCS <label>	6	6	2
+BEQ	$09 nn	BEQ <label>	6	6	2
+BNE	$08 nn	BNE <label>	6	6	2
+BGE	$07 nn	BGE <label>	6	6	2
+BLT	$06 nn	BLT <label>	6	6	2
+BMI	$0b nn	BMI <label>	6	6	2
+BPL	$0a nn	BPL <label>	6	6	2
+BRA	$05 nn	BRA <label>	6	6	2
+BVC	$0e nn	BVC <label>	6	6	2
+BVS	$0f nn	BVS <label>	6	6	2
 ()
 
 .BIC Bit Clear Mask
@@ -197,8 +207,8 @@ All prefix data is cleared.
 s - Set on negative result, else cleared.
 z - Set on zero result, else cleared.
 
-ALT3,AND	$3f,$7n	BIC #n	2
-ALT1,AND	$3d,$7n	BIC Rn	2
+ALT3,AND	$3f,$7n	BIC #n	6	6	2
+ALT1,AND	$3d,$7n	BIC Rn	6	6	2
 (AND,WITH,FROM,TO)
 
 .CACHE Set Cache Base.
@@ -214,7 +224,7 @@ Note: Takes 2 cycles if the cache base register <> r15.
 
 000------
 
-CACHE	$02	CACHE	2/1
+CACHE	$02	CACHE	3/4	3/4	1
 ()
 
 .CMODE Set Plot Mode.
@@ -250,7 +260,7 @@ All prefix data is cleared.
 
 000------
 
-ALT1,COLOR	$3d,$4e	CMODE	2
+ALT1,COLOR	$3d,$4e	CMODE	6	6	2
 (COLOR,PLOT,WITH,FROM)
 
 .COLOR Set Plot Color.
@@ -263,7 +273,7 @@ All prefix data is cleared.
 
 000------
 
-COLOR	$4e	COLOR	1
+COLOR	$4e	COLOR	3	3	1
 (CMODE,PLOT,WITH,FROM)
 
 .COLOUR Set Plot Colour.
@@ -276,7 +286,7 @@ All prefix data is cleared.
 
 000------
 
-COLOUR	$4e	COLOUR	1
+COLOUR	$4e	COLOUR	3	3	1
 (CMODE,PLOT,WITH,FROM)
 
 .CMP Compare registers.
@@ -302,7 +312,7 @@ c - Set on unsigned overflow, cleared on
     (Set on adder overflow, else cleared)
 z - Set on zero result, else cleared.
 
-ALT3,SUB	$3f,$6n	CMP Rn	2
+ALT3,SUB	$3f,$6n	CMP Rn	6	6	2
 (SUB,WITH,FROM)
 
 .DEC Decrement Register.
@@ -318,7 +328,7 @@ All prefix data is cleared.
 s - Set on negative result, else cleared.
 z - Set on zero result, else cleared.
 
-DEC	$en	DEC Rn	1
+DEC	$en	DEC Rn	3	3	1
 (SUB,WITH,FROM,TO)
 
 .DIV2 Divide By Two With Rounding.
@@ -340,7 +350,7 @@ s - Set on negative result, else cleared.
 z - Set on zero result, else cleared.
 c - Takes prior value of SReg bit 0.
 
-ALT1,ASR	$3d,$96	DIV2	2
+ALT1,ASR	$3d,$96	DIV2	2	6	6
 (ASR,LSR,ROR,WITH,FROM,TO)
 
 .FMULT Fractional Signed Multiply.
@@ -363,7 +373,7 @@ s - Set on negative result, else cleared.
 z - Set if high word is zero, else cleared.
 c - ((SReg) * r6) & $8000)
 
-FMULT	$9f	FMULT	5/8
+FMULT	$9f	FMULT	7/11	7/11	4/8
 (LMULT,MULT,UMULT,WITH,FROM,TO)
 
 .FROM Name Source Register For Next Instruction.
@@ -384,7 +394,7 @@ No other prefix data is changed.
 
 ---------
 
-FROM	$bn	FROM Rn	1
+FROM	$bn	FROM Rn	3	3	1
 (MOVES,WITH,TO)
 
 .GETB Get Byte From ROM Buffer.
@@ -405,7 +415,7 @@ Prefix data is cleared.
 
 000------
 
-GETB	$ef	GETB	1+
+GETB	$ef	GETB	3/8	3/9	1/6
 (GETBH,GETBL,GETBS,GETC,TO)
 
 .GETBH Get High Byte From ROM Buffer.
@@ -428,7 +438,7 @@ Prefix data is cleared.
 
 000------
 
-ALT1,GETB	$3d,$ef	GETBH	2+
+ALT1,GETB	$3d,$ef	GETBH	6-10	6-9	2-6
 (GETB,GETBL,GETBS,GETC,TO)
 
 .GETBL Get Low Byte From ROM Buffer.
@@ -451,7 +461,7 @@ Prefix data is cleared.
 
 000------
 
-ALT2,GETB	$3e,$ef	GETBL	2+
+ALT2,GETB	$3e,$ef	GETBL	6-10	6-9	2-6
 (GETB,GETBH,GETBS,GETC,TO)
 
 .GETBS Get Signed Byte From ROM Buffer.
@@ -472,7 +482,7 @@ Prefix data is cleared.
 
 000------
 
-ALT3,GETB	$3f,$3e	GETBS	2+
+ALT3,GETB	$3f,$3e	GETBS	6-10	6-9	2-6
 (GETB,GETBH,GETBL,GETC,SEX,TO)
 
 .GETC Get Byte From ROM Buffer To Color Register.
@@ -490,7 +500,7 @@ Prefix data is cleared.
 
 000------
 
-GETC	$df	GETC	1+
+GETC	$df	GETC	3-10	3-9	1-6
 (GETB,GETBH,GETBL,GETBS,COLOR,CMODE,PLOT)
 
 .HIB Value Of High Byte Of Register.
@@ -509,7 +519,7 @@ All prefix data is cleared.
 s - Set on negative byte result.
 z - Set on zero byte result.
 
-HIB	$c0	HIB	1
+HIB	$c0	HIB	3	3	1
 (LOB)
 
 .IBT In-line Byte To.
@@ -526,7 +536,7 @@ All prefix data is cleared.
 
 000------
 
-IBT,xx	$An xx	IBT Rn,#xx	2
+IBT,xx	$An xx	IBT Rn,#xx	6	6	2
 (IWT,LM,LMS,SM,SMS)
 
 .INC Increment Register.
@@ -542,7 +552,7 @@ All prefix data is ignored and cleared.
 s - Set on negative result.
 z - Set on zero result.
 
-INC	$dn	INC Rn	1
+INC	$dn	INC Rn	3	3	1
 (DEC)
 
 .IWT In-line Word To.
@@ -563,7 +573,7 @@ All prefix data is cleared when finished.
 
 000------
 
-IWT,data.w	$fn qq pp	IWT Rn,#ppqq	3
+IWT,data.w	$fn qq pp	IWT Rn,#ppqq	9	9	3
 (IBT,LM,LMS,SM,SMS)
 
 .JMP Jump To Address.
@@ -579,7 +589,7 @@ All prefix data is cleared.
 
 000------
 
-JMP	$9n	JMP Rn	1
+JMP	$9n	JMP Rn	3	3	1
 (LJMP,Bcc,LOOP)
 
 .LEA Load Effective Address
@@ -604,7 +614,7 @@ address can be given, with only the lower
 
 000------
 
-IWT,data.w	$fn,qq pp	IWT Rn,ppqq	3
+IWT,data.w	$fn,qq pp	IWT Rn,ppqq	9	9	3
 (IBT,LM,LMS,SM,SMS)
 
 .LINK Link Return Address To R11.
@@ -618,7 +628,7 @@ All prefix data is cleared.
 
 000------
 
-LINK	$9n	LINK #n	1
+LINK	$9n	LINK #n	3	3	1
 ()
 
 .LJMP Long Jump To Address.
@@ -641,7 +651,7 @@ instruction after the LJMP instruction.
 
 000------
 
-ALT1,JMP	$3d,$9n	LJMP Rn	2
+ALT1,JMP	$3d,$9n	LJMP Rn	6	6	2
 (JMP)
 
 .LDB Load Byte Register-indirected From RAM.
@@ -656,7 +666,7 @@ All prefix data is cleared.
 
 000------
 
-ALT1,LDW	$3d,$4n	LDB [Rn]	2+
+ALT1,LDW	$3d,$4n	LDB [Rn]	11	13	6
 (LDW)
 
 .LDW Load Word Register-indirected From RAM.
@@ -677,7 +687,7 @@ All prefix data is cleared.
 
 000------
 
-LDW	$4n	LDW [Rn]	1+
+LDW	$4n	LDW [Rn]	10	12	7
 (LDB)
 
 .LM Load Word Register From RAM Using 16-bit Address.
@@ -694,7 +704,7 @@ All prefix data is cleared once finished.
 
 000------
 
-ALT1,IWT,xxxx	$3d,$fn,qqpp	LM Rn,[ppqq]	4+
+ALT1,IWT,xxxx	$3d,$fn,qqpp	LM Rn,[ppqq]	20	21	11
 (IWT,LMS)
 
 .LMS Load Word Register From RAM Using Short Address.
@@ -717,7 +727,7 @@ All prefix data is cleared once finished.
 
 000------
 
-ALT1,IBT,xx	$3d,$an,xx>>1	LMS Rn,[xx]	3+
+ALT1,IBT,xx	$3d,$an,xx>>1	LMS Rn,[xx]	17	17	10
 (IBT,IWT,LM)
 
 .LMULT Long Multiply Registers.
@@ -741,7 +751,7 @@ s - Set on negative result.
 z - Set if high word is zero.
 c - (SReg * R6) AND $8000
 
-ALT1,FMULT	$3d,$9f	LMULT	6-8
+ALT1,FMULT	$3d,$9f	LMULT	10/14	10/14	5/9
 (FMULT,MULT,UMULT,WITH,FROM,TO)
 
 .LOB Value Of Low Byte Of Register.
@@ -761,7 +771,7 @@ cleared.
 s - Set on negative byte result.
 z - Set on zero byte result.
 
-LOB	$9e	LOB	1
+LOB	$9e	LOB	3	3	1
 (HIB)
 
 .LOOP Loop A Section Of Code.
@@ -781,7 +791,7 @@ executed.
 s - Set if result is negative.
 z - Set on zero result.
 
-LOOP	$3c	LOOP	1
+LOOP	$3c	LOOP	3	3	1
 (Bcc,JMP,LJMP)
 
 .LSR Logical Shift Right.
@@ -801,7 +811,7 @@ c - Takes prior value of SReg bit 0.
 s - Set to zero.
 z - Set on zero result.
 
-LSR	$03	LSR	1
+LSR	$03	LSR	3	3	1
 (ASR,DIV2,ROR,WITH,FROM,TO)
 
 .MERGE Merge High Bytes Of r7 And r8.
@@ -820,7 +830,7 @@ v - b6 OR b7 OR b14 OR b15
 c - b5 OR b6 OR b7 OR b13 OR b14 OR b15
 z - b4 OR b5 OR b6 OR b7 OR b12 OR b13 OR b14 OR b15
 
-MERGE	$70	MERGE	1
+MERGE	$70	MERGE	3	3	1
 (LOB,HIB,SWAP)
 
 .MOVE Move Word Data.
@@ -838,13 +848,13 @@ to destination (1st operand).
 
 000------
 
-WITH Rp,TO Rq	$2p,$1q	MOVE Rq,Rp	2
-IBT Rp,#xx	$Ap,$xx	MOVE Rp,#xx	2
-IWT Rp,#ppqq	$Fp,qq pp	MOVE Rp,#ppqq	3
-LM Rp,[ppqq]	$3d,$Fp,qq pp	MOVE Rp,[ppqq]	4+
-LMS Rp,[xx]	$3d,$Ap,$xx	MOVE Rp,[xx]	3+
-SMS [xx],Rq	$3e,$Aq,$xx	MOVE [xx],Rq	3+
-SM [ppqq],Rq	$3e,$Fq,qq pp	MOVE [ppqq],Rq	4+
+WITH Rp,TO Rq	$2p,$1q	MOVE Rq,Rp	6	6	2
+IBT Rp,#xx	$Ap,$xx	MOVE Rp,#xx	6	6	2
+IWT Rp,#ppqq	$Fp,qq pp	MOVE Rp,#ppqq	9	9	3
+LM Rp,[ppqq]	$3d,$Fp,qq pp	MOVE Rp,[ppqq]	20	21	11
+LMS Rp,[xx]	$3d,$Ap,$xx	MOVE Rp,[xx]	17	17	10
+SMS [xx],Rq	$3e,$Aq,$xx	MOVE [xx],Rq	9-14	13-17	3-8
+SM [ppqq],Rq	$3e,$Fq,qq pp	MOVE [ppqq],Rq	12-17	16-20	4-9
 (MOVEB,MOVEW,MOVES,IBT,IWT,LM,LMS,SMS,SM,WITH,TO,FROM)
 
 .MOVEB Move Byte Data Indirected Via Register.
@@ -870,10 +880,10 @@ All prefix data is cleared.
 
 000------
 
-TO Rp,LDB [Ri]	$2p,$3d,$4i	MOVEB Rp,[Ri]	3+
-LDB [Ri]	$3d,$4i	MOVEB R0,[Ri]	2+
-FROM Rp,STB [Ri]	$Bp,$3d,$3i	MOVEB [Ri],Rp	3+
-STB [Ri]	$3d,$3i	MOVEB [Ri],r0	2+
+TO Rp,LDB [Ri]	$2p,$3d,$4i	MOVEB Rp,[Ri]	-	-	3+
+LDB [Ri]	$3d,$4i	MOVEB R0,[Ri]	-	-	2+
+FROM Rp,STB [Ri]	$Bp,$3d,$3i	MOVEB [Ri],Rp	-	-	3+
+STB [Ri]	$3d,$3i	MOVEB [Ri],r0	-	-	2+
 (LDB,STB,MOVE,MOVEW,WITH,FROM)
 
 
@@ -892,7 +902,7 @@ s - Set on negative result.
 z - Set on zero result.
 v - Set to Bit 7.
 
-WITH Rp,FROM Rq	$2q,$Bp	MOVES Rp,Rq	2
+WITH Rp,FROM Rq	$2q,$Bp	MOVES Rp,Rq	6	6	2
 (MOVE,WITH,FROM)
 
 .MOVEW Move Word Data Indirected Via Register.
@@ -918,10 +928,10 @@ All prefix data is cleared.
 
 000------
 
-TO Rp,LDW [Ri]	$2p,$4i	MOVEW Rp,[Ri]	2+
-LDW [Ri]	$4i	MOVEW R0,[Ri]	1+
-FROM Rp,STW [Ri]	$Bp,$3i	MOVEW [Ri],Rp	2+
-STW [Ri]	$3i	MOVEW [Ri],r0	1+
+TO Rp,LDW [Ri]	$2p,$4i	MOVEW Rp,[Ri]	-	-	2+
+LDW [Ri]	$4i	MOVEW R0,[Ri]	-	-	1+
+FROM Rp,STW [Ri]	$Bp,$3i	MOVEW [Ri],Rp	-	-	2+
+STW [Ri]	$3i	MOVEW [Ri],r0	-	-	1+
 (LDB,STB,MOVE,MOVEB,WITH,FROM)
 
 .MULT Signed Multiply.
@@ -942,8 +952,8 @@ All prefix data is cleared.
 s - Set on negative result.
 z - Set on zero result.
 
-MULT	$8n	MULT Rn	1
-ALT2,MULT	$3e,$8n	MULT #n	2
+MULT	$8n	MULT Rn	3-5	3-5	1-2
+ALT2,MULT	$3e,$8n	MULT #n	6-8	6-8	2-3
 (UMULT,LMULT,FMULT,WITH,FROM,TO)
 
 .NOP No Operation.
@@ -955,7 +965,7 @@ All prefix data is cleared.
 
 000------
 
-NOP	$01	NOP	1
+NOP	$01	NOP	3	3	1
 ()
 
 .NOT Invert All Bits.
@@ -974,7 +984,7 @@ All prefix data is cleared.
 s - Set on negative result.
 z - Set on zero result.
 
-NOT	$4f	NOT	1
+NOT	$4f	NOT	3	3	1
 (XOR,BIC)
 
 .OR Logical Bitwise OR.
@@ -997,8 +1007,8 @@ All prefix data is cleared.
 s - Set on negative result.
 z - Set on zero result.
 
-ALT2,OR	$3e,$cn	OR #n	2
-OR	$cn	OR Rn	1
+ALT2,OR	$3e,$cn	OR #n	6	6	2
+OR	$cn	OR Rn	3	3	1
 (WITH,FROM,TO)
 
 .PLOT Plot Pixel.
@@ -1015,7 +1025,7 @@ All prefix data is cleared.
 
 000------
 
-PLOT	$4c	PLOT	1+
+PLOT	$4c	PLOT	3-48	3-51	1-48
 (CMODE,COLOR,RPIX)
 
 .RAMB Set RAM Data Bank.
@@ -1032,7 +1042,7 @@ All prefix data is cleared.
 
 000------
 
-ALT2,GETC	$3e,$df	RAMB	2+
+ALT2,GETC	$3e,$df	RAMB	6	6	2
 (ROMB)
 
 .ROL Rotate Left Through Carry.
@@ -1054,7 +1064,7 @@ c - Takes prior value of SReg bit 15.
 s - Set on negative result.
 z - Set on zero result.
 
-ROL	$04	ROL	1
+ROL	$04	ROL	3	3	1
 (LSL,WITH,FROM,TO)
 
 .ROMB Set ROM Data Bank.
@@ -1072,7 +1082,7 @@ All prefix data is cleared.
 
 000------
 
-ALT3,GETC	$3f,$df	RAMB	2
+ALT3,GETC	$3f,$df	RAMB	6	6	2
 (ROMB)
 
 .ROR Rotate Right Through Carry.
@@ -1094,7 +1104,7 @@ c - Takes prior value of SReg bit 0.
 s - Set on negative result.
 z - Set on zero result.
 
-ROR	$97	ROR	1
+ROR	$97	ROR	3	3	1
 (ASR,ROR,DIV2,ROL,WITH,FROM,TO)
 
 .RPIX Read Pixel Color.
@@ -1115,7 +1125,7 @@ before continuing.
 s - Set on negative result.
 z - Set on zero result.
 
-RPIX	$3d,$4c	RPIX	2+
+RPIX	$3d,$4c	RPIX	24-80	24-78	20-74
 (COLOR,PLOT,WITH,FROM,TO)
 
 .SBC Subtract With Carry.
@@ -1141,7 +1151,7 @@ s - Set on negative result.
 c - Set on unsigned overflow.
 z - Set on zero result
 
-ALT1,SUB	$3d,$6n	SBC Rn	2
+ALT1,SUB	$3d,$6n	SBC Rn	6	6	2
 (ADD,ADC,SUB,WITH,FROM,TO)
 
 .SBK Store Word To Last Ram Address Used.
@@ -1157,7 +1167,7 @@ All prefix data is cleared.
 
 000------
 
-SBK	$90	SBK	1+
+SBK	$90	SBK	3-8	7-11	1-6
 (WITH,FROM,TO)
 
 .SEX Sign Extend Register.
@@ -1178,7 +1188,7 @@ All prefix data is cleared.
 s - Set on negative result.
 z - Set on zero result.
 
-SEX	$95	SEX	1
+SEX	$95	SEX	3	3	1
 (WITH,FROM,TO)
 
 .SM Store Word Register To RAM Using 16-bit Address.
@@ -1201,7 +1211,7 @@ All prefix data is cleared.
 
 000------
 
-ALT2,IWT,ppqq	$3e,$fn,qq pp	SM [ppqq],Rn	4+
+ALT2,IWT,ppqq	$3e,$fn,qq pp	SM [ppqq],Rn	12-17	16-20	4-9
 (IWT,LMS,LM,SMS]
 
 .SMS Store Word Register To RAM Using Short Address.
@@ -1221,7 +1231,7 @@ All prefix data is cleared.
 
 000------
 
-ALT2,IBT,xx	$3e,$an,xx>>1	SMS [xx],Rn	3+
+ALT2,IBT,xx	$3e,$an,xx>>1	SMS [xx],Rn	9-14	13-17	3-8
 (IBT,LM,LMS,SM)
 
 .STOP Stop Processor.
@@ -1237,7 +1247,7 @@ All prefix data is cleared.
 
 000-0----
 
-STOP	$00	STOP	1+
+STOP	$00	STOP	3	3	1
 ()
 
 .STB Store Byte-indirected To RAM.
@@ -1257,7 +1267,7 @@ FROM.
 
 000------
 
-ALT1,STW	$3d,$3n	STB [Rn]	2+
+ALT1,STW	$3d,$3n	STB [Rn]	6-9	8-14	2-5
 (LDW,LDB,STW)
 
 .STW Store Word-indirected To RAM.
@@ -1278,7 +1288,7 @@ All prefix data is cleared.
 
 000------
 
-STW	$3n	STW [Rn]	1+
+STW	$3n	STW [Rn]	3-8	7-11	1-6
 (LDW,LDB,STB)
 
 .SUB Subtract Binary.
@@ -1304,8 +1314,8 @@ s - Set on negative result.
 c - Set on unsigned overflow.
 z - Set on zero result
 
-ALT2,SUB	$3e,$6n	SUB #n	2
-SUB	$6n	SUB Rn	1
+ALT2,SUB	$3e,$6n	SUB #n	2	6	6
+SUB	$6n	SUB Rn	3	3	1
 (ADD,ADC,SBC,WITH,FROM,TO)
 
 .SWAP Swap Low And High Bytes.
@@ -1322,7 +1332,7 @@ All prefix data is cleared.
 
 000------
 
-SWAP	$4d	SWAP	1
+SWAP	$4d	SWAP	3	3	1
 (WITH,FROM,TO)
 
 .TO Name Destination Register.
@@ -1343,7 +1353,7 @@ No other prefix data is changed.
 
 ---------
 
-TO	$1n	TO Rn	1
+TO	$1n	TO Rn	3	3	1
 (WITH,FROM,MOVE)
 
 .UMULT Unsigned Multiply.
@@ -1358,8 +1368,8 @@ for more details.
 s - Set on negative result.
 z - Set on zero result.
 
-ALT1,MULT	$3d,$8n	UMULT Rn	2
-ALT3,MULT	$3f,$8n	UMULT #n	2
+ALT1,MULT	$3d,$8n	UMULT Rn	6/8	6/8	2/3
+ALT3,MULT	$3f,$8n	UMULT #n	6/8	6/8	2/3
 (MULT,LMULT,FMULT,WITH,FROM,TO)
 
 .WITH Name Destination And Source Registers.
@@ -1374,7 +1384,7 @@ DReg have been set.
 
 1--------
 
-WITH	$2n	WITH Rn	1
+WITH	$2n	WITH Rn	3?	3?	1
 (TO,FROM)
 
 .XOR Logical Bitwise Exclusive OR
@@ -1397,6 +1407,6 @@ All prefix data is cleared
 s - Set on negative result.
 z - Set on zero result.
 
-ALT3,OR	$3f,$cn	XOR #n	2
-ALT1,OR	$3d,$cn	XOR Rn	2
+ALT3,OR	$3f,$cn	XOR #n	6?	6?	2
+ALT1,OR	$3d,$cn	XOR Rn	6?	6?	2
 (WITH,FROM,TO)

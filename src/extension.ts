@@ -54,14 +54,14 @@ function renderOpcodeTable(opcodeStr: string): string {
 
   const tableRows = lines.map(line => line.split('\t'));
 
-  // Ensure all rows have exactly 4 columns
+  // Ensure all rows have exactly 6 columns
   for (const row of tableRows) {
-    while (row.length < 4) row.push('-');
+    while (row.length < 6) row.push('-');
   }
 
   const pad = (str: string, len: number) => str.padEnd(len, ' ');
 
-  const colWidths = [15, 15, 15, 4]; // Adjust these as needed
+  const colWidths = [15, 15, 15, 5, 5, 5]; // Adjust these as needed
   const formatRow = (cols: string[]) =>
     '│' + cols.map((col, i) => pad(col, colWidths[i])).join('│') + '│';
 
@@ -69,7 +69,7 @@ function renderOpcodeTable(opcodeStr: string): string {
   const borderMiddle = '├' + colWidths.map(w => '─'.repeat(w)).join('┼') + '┤';
   const borderBottom = '└' + colWidths.map(w => '─'.repeat(w)).join('┴') + '┘';
 
-  const header = formatRow(['Codes', 'Opcode', 'Syntax', 'Cycl']);
+  const header = formatRow(['Codes', 'Opcode', 'Syntax', 'ROM', 'RAM', 'Cache']);
   const bodyRows = tableRows.map(formatRow);
 
   let table = '```\n';

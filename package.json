@@ -3,7 +3,7 @@
   "displayName": "65816 and Super FX Assembly (Argonaut Syntax)",
   "description": "65816 + Super FX ASM language support with Argonaut Software assembler family directives",
   "icon": "img/icon.png",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "publisher": "SunlitSpace542",
   "repository": "https://github.com/Sunlitspace542/65816-superfx-asm-argonaut-vscode",
   "engines": {

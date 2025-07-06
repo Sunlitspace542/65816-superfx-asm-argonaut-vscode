@@ -1,0 +1,44 @@
+          ╔═══════════════════════════════════════════╗
+          ║                                           ║
+          ║   SUPER FX CHIP POP-UP COMMAND REFERENCE  ║
+          ║                                           ║
+          ╚═══════════════════════════════════════════╝
+
+╒═════╤══════════════════════════════════════════════════════════════════
+│Files│
+└─────┘
+
+You need the following files:
+
+    MHELP.CB   -> BRIEF\MACROS\
+    MARIO.HLP  -> BRIEF\HELP\
+
+
+╒════════════╤═══════════════════════════════════════════════════════════
+│Installation│
+└────────────┘
+
+To begin with, type CB MHELP.CB within the brief\macros directory.
+
+Install the following line into your initials macro and press ALT-F10
+to compile:
+
+autoload("mhelp","mhelp_word","mhelp");     /* .CB format */
+
+or:
+
+(autoload "mhelp" "mhelp_word" "mhelp")     /* .M format */
+
+To assign the quick look-up to a key insert the following line also:
+(if you don't wish to assign a key just push F10 and type mhelp or
+mhelp_word)
+
+assign_to_key("<Alt-F11>","mhelp_word");
+assign_to_key("<Ctrl-F11>","mhelp");
+
+With this set up, place your cursor on a Super FX instruction and
+press <Alt-F11> to pop-up the help window.  <Tab> allows you to select
+a reference to look at, <Enter> views it.
+
+═════════════════════════════════════════════════════════════════════════
+

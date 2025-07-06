@@ -2,4 +2,10 @@
 .yarnrc
 .vsix
 **/*.cmd
+**/*.txt
+**/*.py
 **/*.zip
+**/*.CB
+**/*.HLP
+**/*.DOC
+./mhelp_origsrc/**

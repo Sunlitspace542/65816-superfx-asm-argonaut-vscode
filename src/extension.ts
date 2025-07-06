@@ -21,6 +21,7 @@ interface HelpEntry {
 
 let helpData: Record<string, HelpEntry> = {};
 
+// Parses flags field in JSON
 function parseFlags(flagsRaw: string): { statusLine: string, description: string } {
   const lines = flagsRaw.trim().split('\n');
   const statusLine = lines[0].trim();
@@ -28,6 +29,7 @@ function parseFlags(flagsRaw: string): { statusLine: string, description: string
   return { statusLine, description };
 }
 
+// Renders ASCII art flags table
 function renderFlagsTable(flagsStr: string): string {
   const values = flagsStr.trim().split('').map(c => c || ' ');
 
@@ -42,7 +44,7 @@ function renderFlagsTable(flagsStr: string): string {
   ].join('\n');
 }
 
-
+// Renders ASCII art opcode table
 function renderOpcodeTable(opcodeStr: string): string {
   const lines = opcodeStr.trim().split('\n');
 
@@ -54,12 +56,12 @@ function renderOpcodeTable(opcodeStr: string): string {
 
   // Ensure all rows have exactly 4 columns
   for (const row of tableRows) {
-    while (row.length < 4) row.push('');
+    while (row.length < 4) row.push('-');
   }
 
   const pad = (str: string, len: number) => str.padEnd(len, ' ');
 
-  const colWidths = [15, 15, 15, 3]; // Adjust these as needed
+  const colWidths = [15, 15, 15, 4]; // Adjust these as needed
   const formatRow = (cols: string[]) =>
     '│' + cols.map((col, i) => pad(col, colWidths[i])).join('│') + '│';
 
@@ -67,7 +69,7 @@ function renderOpcodeTable(opcodeStr: string): string {
   const borderMiddle = '├' + colWidths.map(w => '─'.repeat(w)).join('┼') + '┤';
   const borderBottom = '└' + colWidths.map(w => '─'.repeat(w)).join('┴') + '┘';
 
-  const header = formatRow(['Codes', 'Opcode', 'Syntax', 'C']);
+  const header = formatRow(['Codes', 'Opcode', 'Syntax', 'Cycl']);
   const bodyRows = tableRows.map(formatRow);
 
   let table = '```\n';

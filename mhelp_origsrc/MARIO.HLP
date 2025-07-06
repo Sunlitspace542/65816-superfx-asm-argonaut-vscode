@@ -1,0 +1,1387 @@
+
+.ALT1 Set alt1 prefix flag.
+1 -> alt1
+Assembler syntax: ALT1
+
+This prefix instruction sets the ALT1
+prefix flag, which sets the mode for
+the next instruction.  No other prefix
+data is changed.
+
+-1-------
+
+ALT1	$3d	ALT1	1
+(ALT2,ALT3)
+
+.ALT2 Set alt2 prefix flag.
+1->alt2
+Assembler syntax: ALT2
+
+This prefix instruction sets the ALT2
+prefix flag, which sets the mode for
+the next instruction.  No other prefix
+data is changed.
+
+--1------
+
+ALT2	$3e	ALT2	1
+(ALT1,ALT3)
+
+.ALT3 Set alt1 and alt2 prefix flags.
+1 -> alt1, 1 -> alt2
+Assembler syntax: ALT3
+
+This prefix instruction sets the ALT1
+and ALT2 prefix flags, which sets the
+mode for the next instruction.  No
+other prefix data is changed.
+
+-11------
+
+ALT3	$3f	ALT3	1
+(ALT1,ALT2)
+
+.ADC Add with carry.
+(SReg) + (Operand) + (Carry) -> DReg
+Assembler syntax: ADC #n  (n=0..15)
+                  ADC Rn  (n=0..15)
+
+Add the source register, the operand,
+and the carry flag, and store the
+result in the destination register.
+Source and destination registers
+default to be r0 unless specified
+using WITH, FROM or TO.
+The operand can either be an immediate
+value from 0 to 15, or a register.
+All prefix data is cleared.
+
+000--****
+v - Set if signed overflow.
+    (Set on XOR of the sign bit and the
+    carry from bit 14 of the adder.)
+s - Set if the result is negative, else
+    cleared.
+c - Set on adder overflow, else cleared.
+z - Set on zero result, else cleared.
+
+ALT3,ADD	$3f,$5n	ADC #n	2
+ALT1,ADD	$3d,$5n	ADC Rn	2
+(ADD,INC,WITH,FROM,TO)
+
+.ADD Add binary.
+(SReg) + (Operand) -> DReg
+Assembler syntax: ADD #n  (n=0..15)
+                  ADD Rn  (n=0..15)
+
+Add the source register to the operand
+and store the result in the destination
+register.
+Source and destination registers default
+to be r0 unless they are specified using
+WITH, FROM or TO.
+The operand can either be an immediate
+value from 0 to 15, or a register.
+All prefix data is cleared.
+
+000--****
+v - Set if signed overflow.
+    (Set on XOR of the sign bit and the
+    carry from bit 14 of the adder.)
+s - Set if the result is negative, else
+    cleared.
+c - Set on adder overflow, else cleared.
+z - Set on zero result, else cleared.
+
+ALT2,ADD	$3e,$5n	ADD #n	2
+ADD	$5n	ADD Rn	1
+(ADC,INC,WITH,FROM,TO)
+
+.AND Logical AND.
+(SReg) AND (Operand) -> DReg
+Assembler syntax: AND #n  (n=1..15)
+
+Do logical AND on corresponding bits of
+the source register and the operand, and
+store the result in the destination
+register.
+Source and destination registers default
+to be r0 unless they are specified using
+WITH, FROM, or TO.  The operand can
+either be an immediate value from 1 to
+15, or a register r1-r15.  All prefix
+data is cleared
+
+000---*-*
+s - Set on negative result, else cleared.
+z - Set on zero result, else cleared.
+
+ALT2,AND	$3e,$7n	AND #n	2
+AND	$7n	AND Rn	1
+(BIC,WITH,FROM,TO)
+
+.ASR Arithmetic Shift Right.
+(SReg) ASR 1 -> DReg
+Assembler syntax: ASR
+
+From the source register, shift all bits
+right one place, bit 0 going into the
+carry flag.  The high bit is unchanged.
+Source and destination registers default
+to be r0 unless they are specified using
+WITH, FROM or TO.  All prefix data is
+cleared.
+
+000---***
+c - Takes prior value of SReg bit 0.
+s - Set on negative result, else cleared.
+z - Set on zero result, else cleared.
+
+ASR	$96	ASR	1
+(LSR,DIV2,ROR,WITH,FROM,TO)
+
+.Bcc Branch Conditionally.
+if (condition true) then R15 + d -> R15
+Assembler syntax: Bcc <label>  (cc=condition as below)
+
+If the condition is true, then a signed
+byte offset, fetched as the second byte
+of the instruction is sign-extended,
+and added to R15, the program counter.
+The relative offset can be +127..-128,
+referenced from the first byte after
+the instruction.  Prefix data is left
+unchanged.
+
+Note: If the branch is taken, the next instruction byte
+to be acted upon will be the byte in the processor's
+instruction pipe-line, i.e. the byte which follows the
+branch.  Only once this instruction has been executed
+will the code starting at address <label> be executed.
+
+Condition    Opcode     Branch if   Branch if
+CC           $0c nn     c=0         Carry clear
+CS           $0d nn     c=1         Carry set
+EQ           $09 nn     z=1         Equal
+GE           $07 nn     (s xor v)=0 Greater than or equal
+LT           $06 nn     (s xor v)=1 Less than
+MI           $0b nn     s=1         Negative
+PL           $0a nn     s=0         Positive
+RA           $0e nn                 Always
+VC           $0e nn     v=0         Overflow clear
+VS           $0f nn     v=1         Overflow set
+
+---------
+
+()
+
+.BIC Bit Clear Mask
+(SReg) AND ( NOT (Operand)) -> DReg
+Assembler syntax: BIC #n  (n=1..15)
+                  BIC Rn  (n=1..15)
+
+Do logical AND on corresponding bits of
+the source register and the 1's
+complement of the operand, and store the
+result in the destination register.
+Source and destination registers default
+to be r0 unless they are specified using
+WITH, FROM or TO.
+The operand can either be an immediate
+value from 1 to 15, or a register r1-r15.
+All prefix data is cleared.
+
+000---*-*
+s - Set on negative result, else cleared.
+z - Set on zero result, else cleared.
+
+ALT3,AND	$3f,$7n	BIC #n	2
+ALT1,AND	$3d,$7n	BIC Rn	2
+(AND,WITH,FROM,TO)
+
+.CACHE Set Cache Base.
+if cache base <> r15 then cache base = r15, reset cache flags
+Assembler syntax: CACHE
+
+If the cache base register is not equal
+to r15 then set the cache base register
+to r15, reset the cache flags, and wait
+for one cycle.
+
+Note: Takes 2 cycles if the cache base register <> r15.
+
+000------
+
+CACHE	$02	CACHE	2/1
+()
+
+.CMODE Set Plot Mode.
+SReg[0..3] -> Plot options register (internal).
+Assembler syntax: CMODE
+
+Sets plot color mode to low 4 bits of
+SReg, to enable transparency, dithering
+and color packing modes.
+
+Bit 0 - Transparency on/off = 1/0.
+        If selected color = 0 then don't plot (The only use
+        for transparency off is to clear a screen area to zero)
+Bit 1 - Dithering on/off = 1/0.
+        16 color mode - hi/lo nybble of color gives two colors.
+        Lo nybble selected if (xpos XOR ypos AND 1) = 0
+        Hi nybble selected if (xpos XOR ypos AND 1) = 1
+        Note: If transparency is ON and the Lo nybble = 0
+        nothing will be drawn (the transparency hardware only
+        checks against the Lo nybble).
+Bit 2 - Hi Nybble color bit on/off = 1/0.
+        In 16 color mode or 256 color mode with CMODE[bit3 = 1].
+        When this bit is set, COLOR command sets the Lo nybble
+        of the color register to the Hi nybble of the source
+        byte. (Used to unpack 16 color sprites stored as the
+        Hi nybble of another sprite)
+Bit 3 - 256 color mode only; Color Hi nybble lock on/off = 1/0.
+        When this bit is set, the Hi nybble of the color is
+        fixed and COLOR commands only change the Lo nybble.
+        Transparency is calculated from the Lo nybble only.
+
+All prefix data is cleared.
+
+000------
+
+ALT1,COLOR	$3d,$4e	CMODE	2
+(COLOR,PLOT,WITH,FROM)
+
+.COLOR Set Plot Color.
+(SReg) -> Color register.
+Assembler syntax: COLOR
+
+Set color used by the plot instruction
+to low byte of SReg.
+All prefix data is cleared.
+
+000------
+
+COLOR	$4e	COLOR	1
+(CMODE,PLOT,WITH,FROM)
+
+.CMP Compare registers.
+(SReg) - (Rn)
+Assembler syntax: CMP Rn  (n=0..15)
+Subtract operand from source register
+and set the flags according to the
+result.  The result is not stored.
+Carry is set if, SReg is greater than
+or equal to Rn, i.e. 6502 style.
+The source register defaults to be r0
+unless it is specified using FROM or
+WITH.  The operand is a register r0..r15.
+All prefix data is cleared.
+
+000--****
+v - Set on signed overflow, else cleared.
+    (Set on XOR of the sign bit and the
+    carry from bit 14 of the adder.)
+s - Set if result is negative.
+c - Set on unsigned overflow, cleared on
+    valid unsigned result.
+    (Set on adder overflow, else cleared)
+z - Set on zero result, else cleared.
+
+ALT3,SUB	$3f,$6n	CMP Rn	2
+(SUB,WITH,FROM)
+
+.DEC Decrement Register.
+(Rn) - 1 -> Rn
+Assembler syntax: DEC Rn
+
+Subtract 1 from the specified register,
+and set the flags accordingly.  The
+register can be r0..r14.
+All prefix data is cleared.
+
+000---*-*
+s - Set on negative result, else cleared.
+z - Set on zero result, else cleared.
+
+DEC	$en	DEC Rn	1
+(SUB,WITH,FROM,TO)
+
+.DIV2 Divide By Two With Rounding.
+if (SReg=-1) then 0 -> DReg, else (SReg) ASR 1 -> DReg.
+Assembler syntax: DIV2
+
+Divide by two with rounding.  The source
+register is arithmetically shifted right
+one place, and the result stored in
+DReg.  If the source data was -1 then
+the result stored is zero.  Source and
+destination registers default to be
+r0 unless they are specified using
+WITH, FROM or TO.
+All prefix data is cleared.
+
+000---***
+s - Set on negative result, else cleared.
+z - Set on zero result, else cleared.
+c - Takes prior value of SReg bit 0.
+
+ALT1,ASR	$3d,$96	DIV2	2
+(ASR,LSR,ROR,WITH,FROM,TO)
+
+.FMULT Fractional Signed Multiply.
+(SReg * r6) >> 16 -> DReg, ((SReg)*r6) AND $8000 -> c.
+Assembler syntax: FMULT
+
+Fractional signed multiply.  A 16x16
+multiply is performed with the source
+register and r6, and the high word of
+the result is stored in the destination
+register.  Source and destination
+registers default to be r0 unless they
+are specified using WITH, FROM or TO.
+All prefix data is cleared.
+
+Note: R4 cannot be used as a destination register.
+
+000---***
+s - Set on negative result, else cleared.
+z - Set if high word is zero, else cleared.
+c - ((SReg) * r6) & $8000)
+
+FMULT	$9f	FMULT	5/8
+(LMULT,MULT,UMULT,WITH,FROM,TO)
+
+.FROM Name Source Register For Next Instruction.
+If b=0 then (Rn) -> SReg else (Rn) -> (DReg)
+Assembler syntax: FROM Rn  (n=0..15)
+
+This prefix instruction sets which of the
+registers r0..r15 is to be used as the
+source register (SReg) for the next
+instruction.  If the b flag is set, then
+the contents of Rn are moved into the
+destination register DReg and the flags
+are set accordingly.  This, coupled with
+the WITH instruction becomes a MOVES.
+(Refer to MOVES for details on the flags,
+etc.)
+No other prefix data is changed.
+
+---------
+
+FROM	$bn	FROM Rn	1
+(MOVES,WITH,TO)
+
+.GETB Get Byte From ROM Buffer.
+(ROM byte) -> DReg
+Assembler syntax: GETB
+
+Get an unsigned byte from ROM buffer to
+DReg.  The upper of byte of DReg is set
+to zero.  R14 sets the ROM read address
+from where the byte is to be fetched into
+the ROM buffer.  If r14 has been modified
+but the fetch from ROM is not yet
+complete, GETB waits for the fetch to
+finish.  The destination register defaults
+to be r0 unless specified using WITH or
+TO.
+Prefix data is cleared.
+
+000------
+
+GETB	$ef	GETB	1+
+(GETBH,GETBL,GETBS,GETC,TO)
+
+.GETBH Get High Byte From ROM Buffer.
+(ROM byte << 8) OR (SReg AND $ff) -> DReg
+Assembler syntax: GETBH
+
+Get a byte from ROM buffer to high byte
+of DReg.  The low byte of the word
+result in the destination register is
+taken as the low byte of the source
+register. R14 sets the ROM address from
+where the byte is to be fetched into
+the ROM buffer.  If r14 has been modified
+but the fetch from ROM is not yet
+complete, GETBH waits for the fetch to
+finish.  Source and destination
+registers default to be r0 unless they
+are specified using WITH, FROM or TO.
+Prefix data is cleared.
+
+000------
+
+ALT1,GETB	$3d,$ef	GETBH	2+
+(GETB,GETBL,GETBS,GETC,TO)
+
+.GETBL Get Low Byte From ROM Buffer.
+(ROM byte) OR (SReg AND $ff00) -> DReg
+Assembler syntax: GETBL
+
+Get a byte from ROM buffer to low byte
+of DReg.  The high byte of the word
+result in the destination register is
+taken as the high byte of the source
+register.  R14 sets the ROM address from
+where the byte is to be fetched into
+the ROM buffer.  If r14 has been modified
+but the fetch from ROM is not yet
+complete, GETBL waits for the fetch to
+finish.  Source and destination
+registers default to be r0 unless they
+are specified using WITH, FROM or TO.
+Prefix data is cleared.
+
+000------
+
+ALT2,GETB	$3e,$ef	GETBL	2+
+(GETB,GETBH,GETBS,GETC,TO)
+
+.GETBS Get Signed Byte From ROM Buffer.
+(ROM byte) Sign-extended -> DReg
+Assembler syntax: GETBS
+
+Get a byte from ROM buffer to low byte
+of DReg and sign extend to make a signed
+word in DReg.  R14 sets the ROM address from
+where the byte is to be fetched into
+the ROM buffer.  If r14 has been modified
+but the fetch from ROM is not yet
+complete, GETBS waits for the fetch to
+finish.  Source and destination
+registers default to be r0 unless they
+are specified using WITH, FROM or TO.
+Prefix data is cleared.
+
+000------
+
+ALT3,GETB	$3f,$3e	GETBS	2+
+(GETB,GETBH,GETBL,GETC,SEX,TO)
+
+.GETC Get Byte From ROM Buffer To Color Register.
+(ROM byte) -> Color register
+Assembler syntax: GETC
+
+Get a byte from ROM buffer to the plot
+color register.  R14 sets the ROM address from
+where the byte is to be fetched into
+the ROM buffer.  If r14 has been modified
+but the fetch from ROM is not yet
+complete, GETC waits for the fetch to
+finish.
+Prefix data is cleared.
+
+000------
+
+GETC	$df	GETC	1+
+(GETB,GETBH,GETBL,GETBS,COLOR,CMODE,PLOT)
+
+.HIB Value Of High Byte Of Register.
+(SReg) LSL 8 -> DReg
+Assembler syntax: HIB
+
+Takes the high byte of the source register
+and stores it in the low byte of the
+destination register.  The high byte
+of the destination register is set to
+zero.  The zero and sign flags are set
+on the value of the byte.
+All prefix data is cleared.
+
+000---*-*
+s - Set on negative byte result.
+z - Set on zero byte result.
+
+HIB	$c0	HIB	1
+(LOB)
+
+.IBT In-line Byte To.
+(n) -> DReg, (next instruction byte) sign extended -> DReg
+Assembler syntax: IBT Rn,#xx  (n=0..15, xx=-128..127)
+
+Set DReg to Rn and set the IL prefix flag.
+This causes the next instruction byte to
+be sign-extended and stored to DReg.
+The assembler syntax used allows the
+byte to be loaded into DReg to be
+specified as an immediate value.
+All prefix data is cleared.
+
+000------
+
+IBT,xx	$An xx	IBT Rn,#xx	2
+(IWT,LM,LMS,SM,SMS)
+
+.INC Increment Register.
+(Rn) + 1 -> Rn
+Assembler syntax: INC Rn  (Rn=0..14)
+
+Add one to register Rn and store the
+result back in Rn.  The flags are
+set according to the result.
+All prefix data is ignored and cleared.
+
+000---*-*
+s - Set on negative result.
+z - Set on zero result.
+
+INC	$dn	INC Rn	1
+(DEC)
+
+.IWT In-line Word To.
+(Rn) -> DReg, (Next two instruction bytes) -> DReg
+Assembler syntax: IWT Rn,#xxxx  (n=0..15, xxxx=0..65535)
+
+Set DReg to Rn and set the IL & IH prefix
+flags.  This causes the next two instructions
+to be fetched and stored in DReg.  The
+first (low) byte is buffered until the
+second (high) byte is ready, at which
+point the word is stored into the
+destination register.  This is important
+for r14 and r15.  The assembler syntax
+allows the word to be loaded into DReg
+to be specified as an immediate value.
+All prefix data is cleared when finished.
+
+000------
+
+IWT,data.w	$fn qq pp	IWT Rn,#ppqq	3
+(IBT,LM,LMS,SM,SMS)
+
+.JMP Jump To Address.
+(Rn) -> (R15)
+Assembler syntax: JMP Rn  (n=8..13)
+
+Load program counter (R15) with Rn.  As
+with branches, the jump is delayed while
+the following instruction byte already
+fetched is executed.
+The register can be r8..r13.
+All prefix data is cleared.
+
+000------
+
+JMP	$9n	JMP Rn	1
+(LJMP,Bcc,LOOP)
+
+.LEA Load Effective Address
+(Rn) -> DReg, (Next two instruction bytes) -> DReg.
+Assembler syntax: LEA Rn,<address>  (n=0..15)
+
+Set DReg to Rn and set the IL & IH prefix
+flags.  This causes the next two instructions
+to be fetched and stored in DReg.  The
+first (low) byte is buffered until the
+second (high) byte is ready, at which
+point the word is stored into the
+destination register.  This is important
+for r14 and r15.  The assembler syntax
+allows the word to be loaded into DReg
+to be specified as an immediate value.
+All prefix data is cleared when finished.
+This instruction is functionally
+identical to IWT except that a full
+address can be given, with only the lower
+16 bits of the address used.
+
+000------
+
+IWT,data.w	$fn,qq pp	IWT Rn,ppqq	3
+(IBT,LM,LMS,SM,SMS)
+
+.LINK Link Return Address To R11.
+(R15) + (Operand) -> r11
+Assembler syntax: LINK #n  (n=1..4)
+
+Link return address to r11.  A specified
+value from one to four is added to r15
+and the result stored in in r11.
+All prefix data is cleared.
+
+000------
+
+LINK	$9n	LINK #n	1
+()
+
+.LJMP Long Jump To Address.
+(Rn) -> R15,  (SReg) -> PC Bank Register.
+Assembler syntax: LJMP Rn  (n=8..13)
+
+Load program counter (R15) with the
+contents of Rn.  The PC bank register
+is loaded with the contents of
+register SReg.  As with branches, the
+next instruction byte to be executed
+before the jump occurs will be the
+byte immediately following the LJMP
+instruction.
+The operand Rn can be r8-r13.
+All prefix data is cleared, the cache
+flags are reset and the cache base
+register is set to point to the
+instruction after the LJMP instruction.
+
+000------
+
+ALT1,JMP	$3d,$9n	LJMP Rn	2
+(JMP)
+
+.LDB Load Byte Register-indirected From RAM.
+[Rn] -> DReg
+Assembler syntax: LDB [Rn]  (n=0.11)
+
+Load byte from RAM at address given by
+Rn, and store it in DReg.  LDB waits for
+the RAM fetch to finish before continuing
+with the next instruction.
+All prefix data is cleared.
+
+000------
+
+ALT1,LDW	$3d,$4n	LDB [Rn]	2+
+(LDW)
+
+.LDW Load Word Register-indirected From RAM.
+[Rn] -> DReg
+Assembler syntax: LDW [Rn]  (n=0..11)
+
+Load word from RAM at even address given
+by Rn, and store it in DReg.  LDB waits
+for the RAM fetch to complete before
+continuing with the next instruction.
+The data is read low byte first, from
+the address given in Rn with the low
+bit of the address forced to 0.  The
+high byte is read from the address given
+by Rn with the low bit of the address
+forced to 1.
+All prefix data is cleared.
+
+000------
+
+LDW	$4n	LDW [Rn]	1+
+(LDB)
+
+.LM Load Word Register From RAM Using 16-bit Address.
+[address fetched from instruction] -> Rn
+Assembler syntax: LM Rn,[xxxx]  (n=0, xxxx = 0..65535)
+
+Set the IL & IH prefix flags.  This
+causes the next two instruction bytes
+(lo/hi) to be fetched and used as an
+address in RAM to load a word into Rn.
+This instruction waits for the RAM
+fetch to finish before continuing.
+All prefix data is cleared once finished.
+
+000------
+
+ALT1,IWT,xxxx	$3d,$fn,qqpp	LM Rn,[ppqq]	4+
+(IWT,LMS)
+
+.LMS Load Word Register From RAM Using Short Address.
+[(byte fetched from instruction) << 1] -> Rn
+Assembler syntax: LMS Rn,[xx]  (n=0..15, xx=0..510)
+
+Set the IL & IH prefix flags.  This causes
+the next instruction byte to be fetched,
+shifted left one place, and used as an
+address in RAM to load a word (lo/hi) into
+Rn.  This means that only even addresses
+from 0 to 510 can be specified in this
+way.  The address given in the source file
+is shifted right by the assembler and
+stored as the third byte of the
+instruction.
+This instruction waits for the RAM fetch
+to finish before continuing.
+All prefix data is cleared once finished.
+
+000------
+
+ALT1,IBT,xx	$3d,$an,xx>>1	LMS Rn,[xx]	3+
+(IBT,IWT,LM)
+
+.LMULT Long Multiply Registers.
+(SReg * R6) -> DReg/r4  (hi/lo word)
+Assembler syntax: LMULT
+
+Long signed multiply.  A 16x16 multiply
+is performed with the source register
+and r6, and the high word of the result
+is stored in the destination register,
+and the low word is stored in r4.  Source
+and destination registers default to be
+r0 unless they are specified using WITH,
+FROM or TO.  If the destination register
+is set to R4 then the result will be
+invalid.
+All prefix data is cleared.
+
+000---***
+s - Set on negative result.
+z - Set if high word is zero.
+c - (SReg * R6) AND $8000
+
+ALT1,FMULT	$3d,$9f	LMULT	6-8
+(FMULT,MULT,UMULT,WITH,FROM,TO)
+
+.LOB Value Of Low Byte Of Register.
+(SReg) AND $ff -> DReg
+Assembler syntax: LOB
+
+Take the low byte of the source register
+and store to the destination register
+with the high byte set to zero.  Zero
+and sign flags are set on value of byte.
+Source and destination registers default
+to be r0 unless they are specified using
+WITH, FROM or TO.  All prefix data is
+cleared.
+
+000---*-*
+s - Set on negative byte result.
+z - Set on zero byte result.
+
+LOB	$9e	LOB	1
+(HIB)
+
+.LOOP Loop A Section Of Code.
+(R12) - 1 -> (R12), if z=0 then (R13) -> (R15)
+Assembler syntax: LOOP
+
+Decrement and store register R12, setting
+zero and sign flags on the result.  If
+the result is non-zero store register
+R13 to the program counter.  Prefix data
+is cleared.  If the branch is taken, it
+is delayed by one cycle, while the
+following opcode byte already fetched is
+executed.
+
+000---*-*
+s - Set if result is negative.
+z - Set on zero result.
+
+LOOP	$3c	LOOP	1
+(Bcc,JMP,LJMP)
+
+.LSR Logical Shift Right.
+(SReg) LSR 1 -> DReg
+Assembler syntax: LSR
+
+From the source register, shift all bits
+right one place, bit 0 going into the
+carry flag.  The high bit is set to zero.
+Source and destination registers default
+to R0 unless they are specified using
+WITH, FROM or TO.
+All prefix data is cleared.
+
+000---0**
+c - Takes prior value of SReg bit 0.
+s - Set to zero.
+z - Set on zero result.
+
+LSR	$03	LSR	1
+(ASR,DIV2,ROR,WITH,FROM,TO)
+
+.MERGE Merge High Bytes Of r7 And r8.
+r7.h -> DReg.h, r8.h -> DReg.l
+Assembler syntax: MERGE
+
+Merge high bytes of r8 and r7 into the
+destination register.  The destination
+register defaults to be r0 unless it is
+specified using WITH or TO.
+All prefix data is cleared.
+
+000--****
+s - b7 OR b15
+v - b6 OR b7 OR b14 OR b15
+c - b5 OR b6 OR b7 OR b13 OR b14 OR b15
+z - b4 OR b5 OR b6 OR b7 OR b12 OR b13 OR b14 OR b15
+
+MERGE	$70	MERGE	1
+(LOB,HIB,SWAP)
+
+.MOVE Move Word Data.
+(Source) -> Destination
+Assembler syntax: MOVE Rd,Rs
+                  MOVE Rd,#xx    (xx=-128..127)
+                  MOVE Rd,#ppqq  (ppqq=0..65535)
+                  MOVE Rd,[ppqq]
+                  MOVE Rd,[xx]   (xx=0..510)
+                  MOVE [xx],Rs
+                  MOVE [ppqq],Rs
+
+Move word data from source (2nd operand)
+to destination (1st operand).
+
+000------
+
+WITH Rp,TO Rq	$2p,$1q	MOVE Rq,Rp	2
+IBT Rp,#xx	$Ap,$xx	MOVE Rp,#xx	2
+IWT Rp,#ppqq	$Fp,qq pp	MOVE Rp,#ppqq	3
+LM Rp,[ppqq]	$3d,$Fp,qq pp	MOVE Rp,[ppqq]	4+
+LMS Rp,[xx]	$3d,$Ap,$xx	MOVE Rp,[xx]	3+
+SMS [xx],Rq	$3e,$Aq,$xx	MOVE [xx],Rq	3+
+SM [ppqq],Rq	$3e,$Fq,qq pp	MOVE [ppqq],Rq	4+
+(MOVEB,MOVEW,MOVES,IBT,IWT,LM,LMS,SMS,SM,WITH,TO,FROM)
+
+.MOVEB Move Byte Data Indirected Via Register.
+[Ri] -> Rp  or  Rq -> [Ri]
+Assembler syntax: MOVEB Rp,[Ri]
+                  MOVEB [Ri],Rq
+
+Using this instruction, byte data can
+either be moved from a register to RAM
+(MOVEB [Ri],Rq) or from RAM to a
+register (MOVEB Rp,[Ri]).  The address
+in RAM is given by the indirection
+register Ri.  The registers used can
+each be r0-r15.  If Rp or Rq are
+specified as R0 the assembler currently
+omits the TO/FROM part of the instruction
+(see below) as the second part (LDB/STB)
+will default to r0 if no prefix data is
+set.  Consequently care must be taken
+when using MOVEB/MOVEW instructions when
+r0 is used.
+All prefix data is cleared.
+
+000------
+
+TO Rp,LDB [Ri]	$2p,$3d,$4i	MOVEB Rp,[Ri]	3+
+LDB [Ri]	$3d,$4i	MOVEB R0,[Ri]	2+
+FROM Rp,STB [Ri]	$Bp,$3d,$3i	MOVEB [Ri],Rp	3+
+STB [Ri]	$3d,$3i	MOVEB [Ri],r0	2+
+(LDB,STB,MOVE,MOVEW,WITH,FROM)
+
+
+.MOVES Move Word Data And Set Flags.
+(Source) -> Destination
+Assembler syntax: MOVE Rp,Rq
+
+Move contents of one register into
+another and set the flags accordingly.
+The registers Rp and Rq can each be
+R0-R15.
+All prefix data is cleared.
+
+000--0*-*
+s - Set on negative result.
+z - Set on zero result.
+v - Set to Bit 7.
+
+WITH Rp,FROM Rq	$2q,$Bp	MOVES Rp,Rq	2
+(MOVE,WITH,FROM)
+
+.MOVEW Move Word Data Indirected Via Register.
+[Ri] -> Rp  or  Rq -> [Ri]
+Assembler syntax: MOVEW Rp,[Ri]
+                  MOVEW [Ri],Rq
+
+Using this instruction, word data can
+either be moved from a register to RAM
+(MOVEW [Ri],Rq) or from RAM to a
+register (MOVEW Rp,[Ri]).  The address
+in RAM is given by the indirection
+register Ri.  The registers used can
+each be r0-r15.  If Rp or Rq are
+specified as R0 the assembler currently
+omits the TO/FROM part of the instruction
+(see below) as the second part (LDW/STW)
+will default to r0 if no prefix data is
+set.  Consequently care must be taken
+when using MOVEB/MOVEW instructions when
+r0 is used.
+All prefix data is cleared.
+
+000------
+
+TO Rp,LDW [Ri]	$2p,$4i	MOVEW Rp,[Ri]	2+
+LDW [Ri]	$4i	MOVEW R0,[Ri]	1+
+FROM Rp,STW [Ri]	$Bp,$3i	MOVEW [Ri],Rp	2+
+STW [Ri]	$3i	MOVEW [Ri],r0	1+
+(LDB,STB,MOVE,MOVEB,WITH,FROM)
+
+.MULT Signed Multiply.
+(SReg.b) * (operand.b) -> DReg
+Assembler syntax: MULT Rn  (n=0..15)
+                  MULT #n  (n=0..15)
+
+Do 8x8 signed multiply with the low 8
+bits of the source register and low 8
+bits of the operand, and store the 16
+bit result in DReg.
+Source and desination registers default
+to be R0 unless they are specified using
+WITH, FROM or TO.
+All prefix data is cleared.
+
+000---*-*
+s - Set on negative result.
+z - Set on zero result.
+
+MULT	$8n	MULT Rn	1
+ALT2,MULT	$3e,$8n	MULT #n	2
+(UMULT,LMULT,FMULT,WITH,FROM,TO)
+
+.NOP No Operation.
+No Operation.
+Assembler syntax: NOP
+
+Do nothing for one cycle.
+All prefix data is cleared.
+
+000------
+
+NOP	$01	NOP	1
+()
+
+.NOT Invert All Bits.
+NOT (SReg) -> DReg
+Assembler syntax: NOT
+
+Calculate 1's complement of the source
+register and store the result in the
+destination register.
+Source and destination registers default
+to be r0 unless they are specified using
+WITH, FROM or TO.
+All prefix data is cleared.
+
+000---*-*
+s - Set on negative result.
+z - Set on zero result.
+
+NOT	$4f	NOT	1
+(XOR,BIC)
+
+.OR Logical Bitwise OR.
+(SReg) OR (Operand) -> DReg
+Assembler syntax: OR #n  (n=1..15)
+                  OR Rn  (n=1..15)
+
+Do logical bitwise OR on corresponding
+bits of the source register and the
+operand, and store the result in the
+destination register.
+Source and destination registers default
+to be r0 unless they are specified using
+WITH, FROM or TO.  The operand can either
+be an immediate value from 1..15, or a 
+register r1..r15.
+All prefix data is cleared.
+
+000---*-*
+s - Set on negative result.
+z - Set on zero result.
+
+ALT2,OR	$3e,$cn	OR #n	2
+OR	$cn	OR Rn	1
+(WITH,FROM,TO)
+
+.PLOT Plot Pixel.
+Plot pixel at x=r1.l,y=r2.l (r1 + 1 -> r1)
+Assembler syntax: PLOT
+
+Plot pixel of color set by COLOR command
+at horizontal position R1 and vertical
+position R2.  The horizontal position R1
+is automatically incremented.  Pixel
+plotting is buffered and normally takes
+one cycle.
+All prefix data is cleared.
+
+000------
+
+PLOT	$4c	PLOT	1+
+(CMODE,COLOR,RPIX)
+
+.RAMB Set RAM Data Bank.
+(SReg) -> RAMBank register.
+Assembler syntax: RAMB
+
+Set RAM bank (64k banks) for loads and
+stores using an 8 bit value from SReg.
+The source register, SReg, defaults to
+be r0 unless specified using WITH or
+FROM.  Operation does not take place
+until all RAM operations have finished.
+All prefix data is cleared.
+
+000------
+
+ALT2,GETC	$3e,$df	RAMB	2+
+(ROMB)
+
+.ROL Rotate Left Through Carry.
+(SReg) ROL 1 -> DReg
+Assembler syntax: ROL
+
+From the source register, rotate all bits
+left one place through the carry flag.
+Hence the carry flag is shifted into bit
+0, and bit 15 is shifted into the carry
+flag.
+Source and destination registers default
+to be r0 unless they are specified using
+FROM, WITH or TO.
+All prefix data is cleared.
+
+000---***
+c - Takes prior value of SReg bit 15.
+s - Set on negative result.
+z - Set on zero result.
+
+ROL	$04	ROL	1
+(LSL,WITH,FROM,TO)
+
+.ROMB Set ROM Data Bank.
+(SReg) -> ROMBank register.
+Assembler syntax: ROMB
+
+Set ROM bank (32k banks) for loads and
+stores(?) using an 8 bit value from SReg.
+The source register, SReg, defaults to be
+R0 unless specified using FROM or WITH.
+This operation does NOT wait for any
+ROM operations to finish and does not
+start a new ROM fetch.
+All prefix data is cleared.
+
+000------
+
+ALT3,GETC	$3f,$df	RAMB	2
+(ROMB)
+
+.ROR Rotate Right Through Carry.
+(SReg) ROR 1 -> DReg
+Assembler syntax: ROR
+
+From the source register, rotate all bits
+right one place through the carry flag.
+Hence the carry flag is shifted into bit
+15, and bit 0 is shifted into the carry
+flag.
+Source and destination registers default
+to be r0 unless they are specified using
+WITH, FROM or TO.
+All prefix data is cleared.
+
+000---***
+c - Takes prior value of SReg bit 0.
+s - Set on negative result.
+z - Set on zero result.
+
+ROR	$97	ROR	1
+(ASR,ROR,DIV2,ROL,WITH,FROM,TO)
+
+.RPIX Read Pixel Color.
+Pixel color at x=r1.l,y=r2.l -> DReg.
+Assembler syntax: RPIX
+
+Read pixel color at horizontal position
+R1 and vertical position R2, and store
+the result in DReg.  Zero and sign flags
+are set on the color and all prefix data
+is cleared.  Any buffered data in the
+plot hardware is written out before the
+pixel data is read.  This instruction
+waits for the fetch from RAM to finish
+before continuing.
+
+000---*-*
+s - Set on negative result.
+z - Set on zero result.
+
+RPIX	$3d,$4c	RPIX	2+
+(COLOR,PLOT,WITH,FROM,TO)
+
+.SBC Subtract With Carry.
+(SReg) - (Operand + Carry) -> DReg.
+Assembler syntax: SBC Rn  (n=0..15)
+
+Subtract Rn and the carry flag from the
+source register and store the result in
+the destination register.  The carry
+flag is set and used 6502 style, i.e.
+carry is set if SReg is greater than
+or equal to Rn.
+Source and destination registers default
+to be r0 unless they are specified using
+WITH, FROM or TO.
+All prefix data is cleared.
+
+000--****
+v - Set on signed overflow.
+    (Set on XOR of the sign and carry from
+    bit 14 of the adder)
+s - Set on negative result.
+c - Set on unsigned overflow.
+z - Set on zero result
+
+ALT1,SUB	$3d,$6n	SBC Rn	2
+(ADD,ADC,SUB,WITH,FROM,TO)
+
+.SBK Store Word To Last Ram Address Used.
+(SReg) -> (Last RAM address used)
+Assembler syntax: SBK
+
+The word contents of the source register
+SReg are stored to the last RAM address
+used.  The source register defaults to
+be r0 unless it is specified using WITH
+or FROM.
+All prefix data is cleared.
+
+000------
+
+SBK	$90	SBK	1+
+(WITH,FROM,TO)
+
+.SEX Sign Extend Register.
+(SReg) sign-extended -> DReg.
+Assembler syntax: SEX
+
+Sign extend low byte of the source
+register to a word and store in
+the destination register.  This means
+that the bits in the top byte all take
+the value of bit 7 of the source.
+Source and destination registers default
+to be r0 unless they are specified using
+WITH, FROM or TO.
+All prefix data is cleared.
+
+000---*-*
+s - Set on negative result.
+z - Set on zero result.
+
+SEX	$95	SEX	1
+(WITH,FROM,TO)
+
+.SM Store Word Register To RAM Using 16-bit Address.
+(Rn) -> [address fetched from instruction]
+Assembler syntax: SM [ppqq],Rn  (n=0..15, ppqq=0..65535)
+
+Set the IL & IH prefix flags.  This
+causes the next two instruction bytes
+(lo/hi) to be fetched and used as an
+address in RAM to store the word in Rn.
+The data is written low byte to the
+address given and high byte to the
+address XOR 1.  The high byte is written
+to the address given with the low bit of
+the address forced to 1.  The write is
+RAM buffered, so the processor can
+continue, if no other RAM writes are
+pending.
+All prefix data is cleared.
+
+000------
+
+ALT2,IWT,ppqq	$3e,$fn,qq pp	SM [ppqq],Rn	4+
+(IWT,LMS,LM,SMS]
+
+.SMS Store Word Register To RAM Using Short Address.
+(Rn) -> [(byte fetched from instruction) << 1]
+Assembler syntax: SMS [xx],Rn  (n=0..15, xx=0..510)
+
+Set the IL prefix flag.  This causes the
+next instruction byte to be fetched, shifted
+left one place and used as an address in
+RAM to store the word in Rn.  This means that
+only even addresses from 0..510 can be
+specified in this way.  The lo/hi write to
+RAM is buffered, so the processor can
+continue if not other RAM writes are
+pending.
+All prefix data is cleared.
+
+000------
+
+ALT2,IBT,xx	$3e,$an,xx>>1	SMS [xx],Rn	3+
+(IBT,LM,LMS,SM)
+
+.STOP Stop Processor.
+0 -> GO flag.
+Assembler syntax: STOP
+
+Stop processor by clearing GO flags once
+plotting and RAM writes have completed.
+This instruction causes a 65816 IRQ.
+Execution can only be restarted by the
+65816.
+All prefix data is cleared.
+
+000-0----
+
+STOP	$00	STOP	1+
+()
+
+.STB Store Byte-indirected To RAM.
+(SReg.l) -> [Rn]
+Assembler syntax: STB [Rn]  (n=0..11)
+
+Store byte from the source register to
+RAM at address given by Rn.  The data
+being written is buffered, so the
+processor continues if no other RAM
+writes are pending.  Status flags are
+not affected, but all prefix data is
+cleared.
+The source register defaults to be r0
+unless it is specified using WITH or
+FROM.
+
+000------
+
+ALT1,STW	$3d,$3n	STB [Rn]	2+
+(LDW,LDB,STW)
+
+.STW Store Word-indirected To RAM.
+(SReg) -> [Rn]
+Assembler syntax: STW [Rn]  (n=0..11)
+
+Store word from the source register to
+RAM at even address given by Rn.  The
+data is written low byte to the address
+given in Rn and high byte to the address
+XOR 1.  The high byte is written to the
+address given by Rn with the low bit of
+the address forced to 1.  The data being
+written is buffered so the processor
+continues if no other RAM writes are
+pending.
+All prefix data is cleared.
+
+000------
+
+STW	$3n	STW [Rn]	1+
+(LDW,LDB,STB)
+
+.SUB Subtract Binary.
+(SReg) - (Operand) -> DReg
+Assembler syntax: SUB #n  (n=0..15)
+                  SUB Rn  (n=0..15)
+
+Subtract the operand from the source
+register and store the result in the
+destination register.  Source and
+destination registers default to be
+r0 unless they are specified using
+WITH, FROM or TO.  The operand can
+either be an immediate value from
+0..15 or a register r0..r15.
+All prefix data is cleared.
+
+000--****
+v - Set on signed overflow.
+    (Set on XOR of the sign and carry from
+    bit 14 of the adder)
+s - Set on negative result.
+c - Set on unsigned overflow.
+z - Set on zero result
+
+ALT2,SUB	$3e,$6n	SUB #n	2
+SUB	$6n	SUB Rn	1
+(ADD,ADC,SBC,WITH,FROM,TO)
+
+.SWAP Swap Low And High Bytes.
+(SReg.l) -> (DReg.h), (SReg.h) -> (DReg.l)
+Assembler syntax: SWAP
+
+Swap the high and low bytes of the source
+register and store the result in the
+destination register.
+Source and destination registers default
+to be r0 unless they are specified using
+WITH, FROM or TO.
+All prefix data is cleared.
+
+000------
+
+SWAP	$4d	SWAP	1
+(WITH,FROM,TO)
+
+.TO Name Destination Register.
+if b=0 then (Rn) -> DReg else (SReg) -> Rn
+Assembler syntax: TO Rn  (n=0..15)
+
+This prefix instruction sets the
+destination register, DReg, for the next
+instruction to Rn.  If the b flag is set,
+i.e. if the last instruction was WITH,
+then the contents of the register are
+moved into Rn.  SReg is set by the
+previous WITH instruction.  This WITH/TO
+combination is the MOVE Rp,Rq instruction.
+Refer to MOVE for details of flags
+expected.
+No other prefix data is changed.
+
+---------
+
+TO	$1n	TO Rn	1
+(WITH,FROM,MOVE)
+
+.UMULT Unsigned Multiply.
+(SReg.l) * (Operand.l) -> DReg
+Assembler syntax: UMULT Rn  (n=0..15)
+                  UMULT #n  (n=0..15)
+
+Do 8x8 unsigned multiply.  Refer to MULT
+for more details.
+
+000---*-*.
+s - Set on negative result.
+z - Set on zero result.
+
+ALT1,MULT	$3d,$8n	UMULT Rn	2
+ALT3,MULT	$3f,$8n	UMULT #n	2
+(MULT,LMULT,FMULT,WITH,FROM,TO)
+
+.WITH Name Destination And Source Registers.
+(Rn) -> SReg, (Rn) -> DReg.
+Assembler syntax: WITH Rn  (n=0..15)
+
+This prefix instruction sets both the
+source and the destination registers for
+the next instruction to Rn.  The b flag
+is set to indicate that both SReg and
+DReg have been set.
+
+1--------
+
+WITH	$2n	WITH Rn	1
+(TO,FROM)
+
+.XOR Logical Bitwise Exclusive OR
+(SReg) XOR (Operand) -> DReg
+Assembler syntax: XOR #n  (n=1..15)
+                  XOR Rn  (n=1..15)
+
+Do logical bitwise exclusive OR on
+corresponding bits of the source
+register and the operand, and store
+the result in the destination register.
+Source and destination registers default
+to be r0 unless they are specified using
+WITH, FROM, or TO.  The operand can
+either be an immediate value from 1 to
+15, or a register r1-r15.
+All prefix data is cleared
+
+000---*-*
+s - Set on negative result.
+z - Set on zero result.
+
+ALT3,OR	$3f,$cn	XOR #n	2
+ALT1,OR	$3d,$cn	XOR Rn	2
+(WITH,FROM,TO)

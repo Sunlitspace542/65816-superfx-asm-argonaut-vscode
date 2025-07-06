@@ -1,0 +1,348 @@
+/*   ┌─────────────────────────────┐
+     │                             │
+     │   Mario code help parser    │
+     │                             │
+     └─────────────────────────────┘
+*/
+
+
+#define TABSTOP1 17
+#define TABSTOP2 33
+#define TABSTOP3 49
+#define TABSTOP4 54
+
+void mhelp(string word);
+
+
+void copyuntil(int inputbuf,int outputbuf,string char)
+	{
+	int old_buf_id;
+	string line;
+	int linenum,linenum2;
+
+	old_buf_id = inq_buffer();
+
+	set_buffer(inputbuf);
+	beginning_of_line();
+	drop_anchor(3);
+
+	inq_position(linenum);
+
+	search_fwd("<"+char);
+
+	inq_position(linenum2);
+
+	if (linenum != linenum2)
+		{
+		up();
+		copy();
+		move_rel(2);
+		set_buffer(outputbuf);
+		paste();
+		}
+	else
+		{
+		raise_anchor();
+		down();
+		}
+
+	set_buffer(old_buf_id);	
+	}
+
+
+void mhelp_word()
+	{
+	string word;
+	int pos,x,y;
+
+	inq_position(y,x);
+
+	search_back("[~a-z]");
+	next_char();
+	word = trim(ltrim(read()));
+
+	if (pos = search_string("[~a-z]",word))
+		{
+		word = substr(word,1,pos-1);
+		}
+
+	move_abs(y,x);
+
+	mhelp(word);
+
+	}
+
+void mhelp(string word)
+	{
+	int old_buf_id,outputbuf,n,numlines;
+	int height,width;
+	string search,line,line2;
+	global int _mhelp_rerequest=1;
+	global string _mhelp_word;
+	global int _mhelp_buf;
+	string helpname;
+
+
+	if (word == "")
+		if (!get_parm(NULL,word," Super FX Instruction: ")) return;
+
+	old_buf_id = inq_buffer();
+
+	sprintf(helpname,"%s\\mario.hlp",inq_environment("BHELP"));
+	_mhelp_buf = create_buffer("mario.hlp",helpname,1);
+
+	_mhelp_word = word;
+
+	while (_mhelp_rerequest)
+		{
+		_mhelp_rerequest = 0;
+
+		set_buffer(_mhelp_buf);
+
+		if (search_fwd("<."+_mhelp_word+" ") || search_back("<."+_mhelp_word+" "))
+			{
+			outputbuf = create_buffer("SuperFX Help","mhelp.tmp",1);
+
+			_mhelp_word = substr(read(),2,strlen(_mhelp_word));
+			next_char(strlen(_mhelp_word)+2);
+			line = trim(read());
+			down();
+			beginning_of_line();
+			line2 = trim(read());
+			down();
+			set_buffer(outputbuf);
+			insert(_mhelp_word+"\n\n"+line+"\n\nOperation: "+line2+"\n\n");
+			copyuntil(_mhelp_buf,outputbuf,"");
+
+			set_buffer(_mhelp_buf);
+			line = trim(read());
+			down();
+
+			set_buffer(outputbuf);
+
+			sprintf(line2,"│%s │%s │%s │%s │%s │%s │%s │%s │%s │\n",
+				substr(line,1,1),
+				substr(line,2,1),
+				substr(line,3,1),
+				substr(line,4,1),
+				substr(line,5,1),
+				substr(line,6,1),
+				substr(line,7,1),
+				substr(line,8,1),
+				substr(line,9,1));
+
+			insert("\n┌──┬──┬──┬──┬──┬──┬──┬──┬──┐\n");
+			insert("│b │a1│a2│r │g │v │s │c │z │\n");
+			insert("├──┼──┼──┼──┼──┼──┼──┼──┼──┤\n");
+			insert(line2);
+			insert("└──┴──┴──┴──┴──┴──┴──┴──┴──┘\n\n");
+
+			copyuntil(_mhelp_buf,outputbuf,"");
+
+			tabs(TABSTOP1,TABSTOP2,TABSTOP3,TABSTOP4);
+			insert("┌───────────────┬───────────────┬───────────────┬────┐\n");
+			insert("│Codes          │Opcode         │Syntax         │Cycl│\n");
+			insert("├───────────────┼───────────────┼───────────────┼────┤\n");
+
+			set_buffer(_mhelp_buf);
+			while (read(1) != "(")
+				{
+				line = trim(read());
+				set_buffer(outputbuf);
+
+				for (n=0;n<4;n++)
+					{
+					insert("│"+substr(line,1,(index(line,"\t") > TABSTOP1-3) ? TABSTOP1-3:index(line,"\t")-1)+"\t");
+					line = substr(line,index(line,"\t")+1);
+					}
+				insert("│\n");
+				set_buffer(_mhelp_buf);
+				down();
+				}
+
+			set_buffer(outputbuf);
+			insert("└───────────────┴───────────────┴───────────────┴────┘\n");
+
+			copyuntil(_mhelp_buf,outputbuf,"(");
+
+			set_buffer(_mhelp_buf);
+			up();
+			line = trim(read());
+
+			set_buffer(outputbuf);
+			insert("\nSee Also: "+substr(line,2,strlen(line)-2)+".\n");
+
+			inq_position(numlines);
+
+			top_of_buffer();
+
+			inq_screen_size(height,width);
+
+			if (height> numlines+3) height = numlines+3;
+			else height -= 3;
+
+			create_window(5,height,75,2,"<Esc> abort, <Tab> references, <Pgdn/Pgup> browse.");
+			attach_buffer(outputbuf);
+
+			keyboard_push();
+			assign_to_key ("<Esc>","_mhelp_exit");
+			assign_to_key ("<Tab>","_mhelp_more");
+			assign_to_key ("<Enter>","_mhelp_ret");
+			assign_to_key ("<PgDn>","_mhelp_pgdn");
+			assign_to_key ("<PgUp>","_mhelp_pgup");
+
+			refresh();
+
+			process();
+
+			keyboard_pop();
+			delete_window();
+			delete_buffer(outputbuf);
+
+			}
+		else
+			error(" '%s' is not a Super FX instruction.",_mhelp_word);
+		}
+
+
+	set_buffer(old_buf_id);
+
+/* allows quick re-access if not deleted:
+	delete_buffer(_mhelp_buf);
+*/
+
+	}
+
+void _mhelp_more()
+	{
+	int x,y;
+
+	inq_position(y,x);
+
+	beginning_of_line();
+	raise_anchor();
+
+	if (substr(read(),1,10) == "See Also: ")
+		{
+		move_abs(y,x);
+		next_char();
+		drop_anchor(4);
+		if (!search_fwd(".|,"))
+			{
+			raise_anchor();
+			top_of_buffer();
+			}
+		}
+	else
+		{
+		search_fwd("See Also: ");
+		move_rel(0,10);
+		drop_anchor(4);
+		if (!search_fwd(".|,"))
+			{
+			message("No references.");
+			raise_anchor();
+			move_abs(y,x);
+			}
+		
+		}
+	
+
+	refresh();
+	}
+
+_mhelp_ret()
+	{
+	int bufid;
+
+	if (inq_marked())
+		{
+		copy();
+		_mhelp_rerequest = 1;
+
+		bufid = create_buffer("mhelp temp",NULL,1);
+		set_buffer(bufid);
+
+		paste();
+		top_of_buffer();
+		_mhelp_word = trim(ltrim(read()));
+
+		delete_buffer(bufid);
+		
+		exit();
+		}
+	}
+
+
+_mhelp_pgdn()
+	{
+	set_buffer(_mhelp_buf);
+
+	if (!search_fwd("<."))
+		{
+		top_of_buffer();
+		search_fwd("<.");
+		}
+
+	next_char();
+
+	_mhelp_word = trim(ltrim(read()));
+
+	_mhelp_word = substr(_mhelp_word,1,index(_mhelp_word," ")-1);
+
+	_mhelp_rerequest = 1;
+
+	exit();
+	}
+
+_mhelp_pgup()
+	{
+
+	set_buffer(_mhelp_buf);
+
+	search_back("<.");
+
+	prev_char();
+
+	if (!search_back("<."))
+		{
+		end_of_buffer();
+		search_back("<.");
+		}
+
+	next_char();
+
+	_mhelp_word = trim(ltrim(read()));
+	_mhelp_word = substr(_mhelp_word,1,index(_mhelp_word," ")-1);
+
+	_mhelp_rerequest = 1;
+
+	exit();
+
+	
+
+	}
+
+
+
+_mhelp_exit()
+	{
+	exit();
+	}
+
+
+/*
+ flag table layout:
+┌──┬──┬──┬──┬──┬──┬──┬──┬──┐
+│b │a1│a2│r │g │v │s │c │z │
+├──┼──┼──┼──┼──┼──┼──┼──┼──┤
+│  │  │  │  │  │  │  │  │  │
+└──┴──┴──┴──┴──┴──┴──┴──┴──┘
+
+ codes table layout:
+┌───────────────┬───────────────┬───────────────┬───┐  
+│Codes          │Opcode         │Syntax         │C  │
+├───────────────┼───────────────┼───────────────┼───┤
+└───────────────┴───────────────┴───────────────┴───┘
+
+*/

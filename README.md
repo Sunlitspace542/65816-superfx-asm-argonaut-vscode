@@ -15,12 +15,14 @@ I want to add support for Randal Linden's xAsm assembler in the future, though I
 
 ## Compiling
 
-Node.js, Git, and obviously Visual Studio Code itself must be installed for this to compile.  
+Node.js, Git, Python 3, and obviously Visual Studio Code itself must be installed for this to compile.  
 I don't know why Git is required, but it is.  
 Open a PowerShell terminal window in the root of the repo and run ``npm install`` and ``npm install -g @vscode/vsce`` to setup all the dependencies.  
 Run ``npm run compile`` to compile.  
 Run ``vsce package`` to build a VSIX file that can be installed.  
-Alternatively on Windows, use ``getmodules.cmd`` to install dependecies, use ``build.cmd`` to compile, and use ``package.cmd`` to make the VSIX file.
+Alternatively on Windows, use ``getmodules.cmd`` to install dependecies, use ``build.cmd`` to compile, and use ``package.cmd`` to make the VSIX file.  
+
+To rebuild the Super FX help JSON, go to ``src\data\`` and run ``python3 makejson.py``.  
 
 ## TODO
 

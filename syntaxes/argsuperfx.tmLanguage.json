@@ -1,8 +1,6 @@
 {
   "fileTypes": [
-    "asm",
-    "inc",
-    "ext"
+    "mc"
   ],
   "name": "Super FX Assembly (Argonaut)",
   "scopeName": "source.asm.argsuperfx",
@@ -17,35 +15,35 @@
       "name": "comment.line"
     },
     {
-      "comment": "Command Seperator",
+      "comment": "Command Seperator -- not sure if this assembler has this",
       "match": "[\\s]:[\\s]",
       "name": "keyword.sasm_argsfx.command.concatenate"
     },
     {
       "comment": "Label Reference",
-      "name": "SASM/ARSGFX.branch.label",
-      "match": "\\b(BCC|BCS|BEQ|BGE|BLT|BMI|BNE|BPL|BRA|BVC|BVS|JMP|LJMP)\\b[\\s]+([a-zA-Z0-9_\\\\@]+)",
+      "name": "meta.label-reference.sasm_argsfx",
+      "match": "(?i)\\b(BCC|BCS|BEQ|BGE|BLT|BMI|BNE|BPL|BRA|BVC|BVS|JMP|LJMP)\\b[ \\t]+([a-zA-Z_@][a-zA-Z0-9_@]*)\\b",
       "captures": {
         "1": {
-          "name": "keyword.mnemonic"
+        "name": "keyword.mnemonic"
         },
         "2": {
-          "name": "label.sasm_argsfx.label.reference"
+        "name": "entity.name.function"
         }
-      }
+    }
     },
     {
       "comment": "Sub-Label Reference",
-      "name": "label.sasm_argsfx.subbranch.label",
-      "match": "\\b(BCC|BCS|BEQ|BGE|BLT|BMI|BNE|BPL|BRA|BVC|BVS|JMP|LJMP)\\b[\\s]+([\\.][a-zA-Z0-9_\\\\@]+)",
+      "name": "meta.sublabel-reference.sasm_argsfx",
+      "match": "(?i)\\b(BCC|BCS|BEQ|BGE|BLT|BMI|BNE|BPL|BRA|BVC|BVS|JMP|LJMP)\\b[ \\t]+(\\.[a-zA-Z_@][a-zA-Z0-9_@]*)\\b",
       "captures": {
         "1": {
-          "name": "keyword.mnemonic"
+        "name": "keyword.mnemonic"
         },
         "2": {
-          "name": "label.sasm_argsfx.sublabel.reference"
+        "name": "entity.name.function"
         }
-      }
+    }
     },
     {
       "comment": "Mnemonics",
@@ -54,7 +52,7 @@
     },
     {
       "comment": "Preprocessor",
-      "match": "(?i)\\b(ANSI|CHECKMAC|DATE|DB|DW|DS|DEFEND|DEFERROR|ERROR_WRONG_MODE|ERROR|ERRO|DEFS|ELSEIF|END|ENDC|ENDM|ENDR|EQU|EQUR|EXPR|EXTERN|FABCARD|FAIL|FOPEN|FCLOSE|GETENV|GETHEAP|IFEQ|IFNE|IFGE|IFLE|IFGT|IFLT|IFD|IFND|IFC|IFNC|IFV|IFNV|IFS|IFNS|IFFE|IFFNE|INCBIN|INCCOL|INCDIR|INCLUDE|IRP|IRS|LIST|LOCAL|LONGA|LONGI|LOWER|MACRO|MARIO|M_ERROR|MEXIT|NARG|ON|OFF|ORG|OUTPUT|PRINTF|PRTF|PUBLIC|ROLS|RUN|RELEASE|REPT|SEND|SETDBR|SHORTA|SHORTI|SICE|STRING|STRLEN|SUBSTR|SUPPRESS|TIME|TYPE|UPPER|WARN|WRITE)\\b",
+      "match": "(?i)\\b(ANSI|CHECKMAC|DATE|DB|DW|DS|DEFEND|DEFERROR|ERROR|ERRO|DEFS|ELSEIF|END|ENDC|ENDM|ENDR|EQU|EQUR|EXPR|EXTERN|FABCARD|FAIL|FOPEN|FCLOSE|GETENV|GETHEAP|IFEQ|IFNE|IFGE|IFLE|IFGT|IFLT|IFD|IFND|IFC|IFNC|IFV|IFNV|IFS|IFNS|IFFE|IFFNE|INCBIN|INCCOL|INCDIR|INCLUDE|IRP|IRS|LIST|LOCAL|LONGA|LONGI|LOWER|MACRO|MARIO|M_ERROR|MEXIT|NARG|ON|OFF|ORG|OUTPUT|PRINTF|PRTF|PUBLIC|ROLS|RUN|RELEASE|REPT|SEND|SETDBR|SHORTA|SHORTI|SICE|STRING|STRLEN|SUBSTR|SUPPRESS|TIME|TYPE|UPPER|WARN|WRITE)\\b",
       "name": "keyword.sasm_argsfx.asm"
     },
     {
@@ -88,14 +86,14 @@
       "name": "constant.sasm_argsfx.numeric.dec"
     },
     {
-      "comment": "Label",
-      "match": "^[\\s]*([a-zA-Z0-9_\\\\@]*):",
-      "name": "label.sasm_argsfx.label"
+      "comment": "Label (starts at column 1)",
+      "match": "^[a-zA-Z_@][a-zA-Z0-9_@]*\\b",
+      "name": "entity.name.function"
     },
     {
-      "comment": "Sub-Label",
-      "match": "^[\\s]*[\\.]([a-zA-Z0-9_\\\\@]*)",
-      "name": "label.sasm_argsfx.sublabel"
+      "comment": "Sub-Label (dot-prefixed at column 1)",
+      "match": "^\\.[a-zA-Z_@][a-zA-Z0-9_@]*\\b",
+      "name": "entity.name.function"
     },
     {
       "comment": "String",

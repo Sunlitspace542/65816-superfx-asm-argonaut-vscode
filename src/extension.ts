@@ -13,7 +13,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
 
-const macroDocs: Map<string, { markdown: vscode.MarkdownString, file: string }> = new Map();
+const macroDocs: Map<string, { markdown: vscode.MarkdownString; file: string; line: number }> = new Map();
 const legend = new vscode.SemanticTokensLegend(['macro'], []);
 
 function formatDocLines(docLines: string[]): string {
@@ -41,12 +41,12 @@ function formatDocLines(docLines: string[]): string {
     
     if (paramLines.length > 0) {
         output.push('\n**Parameters:**\n');
-        output.push('```\n' + paramLines.join('\n') + '\n```');
+        output.push('```plaintext\n' + paramLines.join('\n') + '\n```');
     }
     
     if (returnsLine) {
         output.push('\n**Returns:**\n');
-        output.push('```\n' + returnsLine + '\n```');
+        output.push('```plaintext\n' + returnsLine + '\n```');
     }
     
     return output.join('\n');
@@ -87,13 +87,14 @@ function updateDocCacheForFile(filePath: string) {
             } else {
                 markdown.appendCodeblock(line.trim(), 'arg65816');
             }
-            macroDocs.set(name, { markdown, file: filePath });
+            macroDocs.set(name, { markdown, file: filePath, line: i }); // `i` is the line number of the macro label or routine
             i++;
             continue;
         }
         
         // 3. Routine label
-        const labelMatch = line.match(/^([a-zA-Z_@][a-zA-Z0-9_@]*)$/);
+        //const labelMatch = line.match(/^([a-zA-Z_@][a-zA-Z0-9_@]*)$/);
+        const labelMatch = line.match(/^([a-zA-Z_@][a-zA-Z0-9_@]*)\b/);
         const nextLine = lines[i + 1]?.trim() ?? '';
         
         if (labelMatch) {
@@ -102,8 +103,10 @@ function updateDocCacheForFile(filePath: string) {
             if (docLines.length > 0) {
                 const formatted = formatDocLines(docLines);
                 markdown.appendMarkdown(formatted);
+            } else {
+                markdown.appendCodeblock(line.trim(), 'arg65816');
             }
-                macroDocs.set(name, { markdown, file: filePath });
+            macroDocs.set(name, { markdown, file: filePath, line: i }); // `i` is the line number of the macro label or routine
             i++;
             continue;
         }
@@ -152,13 +155,13 @@ function scanWorkspaceForDocs() {
                         markdown.appendCodeblock(line.trim(), 'arg65816');
                     }
                     
-                    macroDocs.set(name, { markdown, file: filePath });
+                    macroDocs.set(name, { markdown, file: filePath, line: i }); // `i` is the line number of the macro label or routine
                     i++;
                     continue;
                 }
                 
                 // 3. Match routine/function labels
-                const labelMatch = line.match(/^([a-zA-Z_@][a-zA-Z0-9_@]*)$/);
+                const labelMatch = line.match(/^([a-zA-Z_@][a-zA-Z0-9_@]*)\b/);
                 const nextLine = lines[i + 1]?.trim() ?? '';
                 
                 if (labelMatch) {
@@ -168,8 +171,10 @@ function scanWorkspaceForDocs() {
                     if (docLines.length > 0) {
                         const formatted = formatDocLines(docLines);
                         markdown.appendMarkdown(formatted);
+                    } else {
+                        markdown.appendCodeblock(line.trim(), 'arg65816');
                     }
-                        macroDocs.set(name, { markdown, file: filePath });
+                    macroDocs.set(name, { markdown, file: filePath, line: i }); // `i` is the line number of the macro label or routine
                     i++;
                     continue;
                 }
@@ -281,11 +286,15 @@ export function activate(context: vscode.ExtensionContext) {
                 // Check if it's a macro invocation (must be indented)
                 const lineText = document.lineAt(position.line).text;
                 const isInvoked = /^\s+[a-zA-Z_@][a-zA-Z0-9_@]*/.test(lineText);
+                const isInvokedWithLabelPrefix = /^([a-zA-Z_@][a-zA-Z0-9_@]*\s+)?[a-zA-Z_@][a-zA-Z0-9_@]*/.test(lineText);
+                const isInvokedWithSubLabelPrefix = /^.([a-zA-Z_@][a-zA-Z0-9_@]*\s+)?[a-zA-Z_@][a-zA-Z0-9_@]*/.test(lineText);
                 
-                if (isInvoked && macroDocs.has(word)) {
-                    const { markdown, file } = macroDocs.get(word)!;
+                if ((isInvoked || isInvokedWithLabelPrefix || isInvokedWithSubLabelPrefix) && macroDocs.has(word)) {
+                    const { markdown, file, line } = macroDocs.get(word)!;
                     const enrichedMarkdown = new vscode.MarkdownString(markdown.value);
-                    enrichedMarkdown.appendMarkdown(`\n\n---\n\n*Defined in: \`${path.basename(file)}\`*`);
+                    const relativePath = vscode.workspace.asRelativePath(file);
+                    const uri = vscode.Uri.file(file).with({ fragment: `L${line + 1}` }); // Correct jump target
+                    enrichedMarkdown.appendMarkdown(`\n\n---\n\nDefined in: [\`${relativePath}\`](${uri.toString()})`);
                     enrichedMarkdown.isTrusted = true;
                     return new vscode.Hover(enrichedMarkdown, range);
                 }
@@ -294,7 +303,7 @@ export function activate(context: vscode.ExtensionContext) {
             }
         }
     );
-    
+    // This doesn't get tokens for invocations after labels, but I don't like colorizing them anyway so I don't care
     const semanticProvider: vscode.DocumentSemanticTokensProvider = {
         provideDocumentSemanticTokens(document: vscode.TextDocument): vscode.ProviderResult<vscode.SemanticTokens> {
             const builder = new vscode.SemanticTokensBuilder(legend);
@@ -385,7 +394,7 @@ export function activate(context: vscode.ExtensionContext) {
             return undefined;
         }
     });
-
+    
     context.subscriptions.push(saveWatcher);
     context.subscriptions.push(provider);
     context.subscriptions.push(docProvider);

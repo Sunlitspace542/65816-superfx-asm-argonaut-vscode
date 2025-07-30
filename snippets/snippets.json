@@ -6,7 +6,7 @@
 			";* ${1:Description}",
 			";* @param ${2:param}",
 			";*",
-			";**"
+			";*"
 		],
 		"description": "Documentation comment block"
 	},

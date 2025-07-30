@@ -1,0 +1,40 @@
+{
+	"Documentation Block": {
+		"prefix": "DOCBLOCK",
+		"body": [
+			";**",
+			";* ${1:Description}",
+			";* @param ${2:param}",
+			";*",
+			";**"
+		],
+		"description": "Documentation comment block"
+	},
+	
+	"IFxx block": {
+		"prefix": "IF",
+		"body": [
+			"IF${1:xx}\t${2:expr}",
+			"ENDC"
+		],
+		"description": "IFxx block"
+	},
+
+	"REPT block": {
+		"prefix": "REPT",
+		"body": [
+			"REPT\t${1:expr}",
+			"ENDR"
+		],
+		"description": "REPT block"
+	},
+
+	"MACRO block": {
+		"prefix": "MACRO",
+		"body": [
+			"MACRO\t[${1:parms}]",
+			"\tENDM"
+		],
+		"description": "MACRO block"
+	}
+}

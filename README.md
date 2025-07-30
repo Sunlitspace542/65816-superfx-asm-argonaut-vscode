@@ -1,7 +1,11 @@
 # 65816, Super FX Assembly (Argonaut Syntax) support + Argonaut Assembler Family directives
 
 This Visual Studio Code extension adds 65816 and Super FX Assembly (Argonaut Syntax) support, with additional support for the directives used by Argonaut's SASM and ArgSfx assembler family.  
-It also adds tooltips for Super FX instructions, based on the BRIEF editor macro Argonaut Software originally used.  
+It also adds the following features:
+- Tooltips for Super FX instructions, based on the BRIEF editor macro Argonaut Software originally used  
+- Macro and routine label detection
+- JSDoc style documentation blocks for macros and labels that will display as hover tooltips (type ``DOCBLOCK`` to create a documentation block)
+- Snippets for common blocks (e.g. ``IFXX``, ``REPT``, ``MACRO``)
 
 Extended from [my Super FX tooltip extension](https://github.com/Sunlitspace542/superfxhelp-vscode).
 

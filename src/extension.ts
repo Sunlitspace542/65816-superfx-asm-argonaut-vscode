@@ -19,7 +19,7 @@ const legend = new vscode.SemanticTokensLegend(['macro'], []);
 function formatDocLines(docLines: string[]): string {
     const body: string[] = [];
     const paramLines: string[] = [];
-    let returnsLine = '';
+    let returnsLines: string[] = []
     
     for (const line of docLines) {
         const clean = line.replace(/^;[*]{1,2}\s?/, '').trim();
@@ -27,7 +27,7 @@ function formatDocLines(docLines: string[]): string {
         if (clean.startsWith('@param')) {
             paramLines.push(clean.replace('@param', '').trim());
         } else if (clean.startsWith('@returns') || clean.startsWith('@return')) {
-            returnsLine = clean.replace(/@returns?/, '').trim();
+            returnsLines.push(clean.replace(/@returns?/, '').trim());
         } else {
             body.push(clean);
         }
@@ -44,9 +44,9 @@ function formatDocLines(docLines: string[]): string {
         output.push('```plaintext\n' + paramLines.join('\n') + '\n```');
     }
     
-    if (returnsLine) {
+    if (returnsLines.length > 0) {
         output.push('\n**Returns:**\n');
-        output.push('```plaintext\n' + returnsLine + '\n```');
+        output.push('```plaintext\n' + returnsLines.join('\n') + '\n```');
     }
     
     return output.join('\n');

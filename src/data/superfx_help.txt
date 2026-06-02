@@ -632,13 +632,13 @@ LINK	$9n	LINK #n	3	3	1
 ()
 
 .LJMP Long Jump To Address.
-(Rn) -> R15,  (SReg) -> PC Bank Register.
+(SReg) -> R15,  (Rn) -> PC Bank Register.
 Assembler syntax: LJMP Rn  (n=8..13)
 
 Load program counter (R15) with the
-contents of Rn.  The PC bank register
+contents of SReg.  The PC bank register
 is loaded with the contents of
-register SReg.  As with branches, the
+register Rn.  As with branches, the
 next instruction byte to be executed
 before the jump occurs will be the
 byte immediately following the LJMP
@@ -1212,7 +1212,7 @@ All prefix data is cleared.
 000------
 
 ALT2,IWT,ppqq	$3e,$fn,qq pp	SM [ppqq],Rn	12-17	16-20	4-9
-(IWT,LMS,LM,SMS]
+(IWT,LMS,LM,SMS)
 
 .SMS Store Word Register To RAM Using Short Address.
 (Rn) -> [(byte fetched from instruction) << 1]

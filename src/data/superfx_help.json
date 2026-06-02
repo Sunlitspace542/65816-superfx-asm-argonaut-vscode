@@ -150,7 +150,7 @@
     "opcodes": "LINK\t$9n\tLINK #n\t3\t3\t1\n()"
   },
   "LJMP LONG JUMP TO ADDRESS.": {
-    "description": "(Rn) -> R15,  (SReg) -> PC Bank Register.\nAssembler syntax: LJMP Rn  (n=8..13)\n\nLoad program counter (R15) with the\ncontents of Rn.  The PC bank register\nis loaded with the contents of\nregister SReg.  As with branches, the\nnext instruction byte to be executed\nbefore the jump occurs will be the\nbyte immediately following the LJMP\ninstruction.\nThe operand Rn can be r8-r13.\nAll prefix data is cleared, the cache\nflags are reset and the cache base\nregister is set to point to the\ninstruction after the LJMP instruction.",
+    "description": "(SReg) -> R15,  (Rn) -> PC Bank Register.\nAssembler syntax: LJMP Rn  (n=8..13)\n\nLoad program counter (R15) with the\ncontents of SReg.  The PC bank register\nis loaded with the contents of\nregister Rn.  As with branches, the\nnext instruction byte to be executed\nbefore the jump occurs will be the\nbyte immediately following the LJMP\ninstruction.\nThe operand Rn can be r8-r13.\nAll prefix data is cleared, the cache\nflags are reset and the cache base\nregister is set to point to the\ninstruction after the LJMP instruction.",
     "flags": "000------",
     "opcodes": "ALT1,JMP\t$3d,$9n\tLJMP Rn\t6\t6\t2\n(JMP)"
   },
@@ -287,7 +287,7 @@
   "SM STORE WORD REGISTER TO RAM USING 16-BIT ADDRESS.": {
     "description": "(Rn) -> [address fetched from instruction]\nAssembler syntax: SM [ppqq],Rn  (n=0..15, ppqq=0..65535)\n\nSet the IL & IH prefix flags.  This\ncauses the next two instruction bytes\n(lo/hi) to be fetched and used as an\naddress in RAM to store the word in Rn.\nThe data is written low byte to the\naddress given and high byte to the\naddress XOR 1.  The high byte is written\nto the address given with the low bit of\nthe address forced to 1.  The write is\nRAM buffered, so the processor can\ncontinue, if no other RAM writes are\npending.\nAll prefix data is cleared.",
     "flags": "000------",
-    "opcodes": "ALT2,IWT,ppqq\t$3e,$fn,qq pp\tSM [ppqq],Rn\t12-17\t16-20\t4-9\n(IWT,LMS,LM,SMS]"
+    "opcodes": "ALT2,IWT,ppqq\t$3e,$fn,qq pp\tSM [ppqq],Rn\t12-17\t16-20\t4-9\n(IWT,LMS,LM,SMS)"
   },
   "SMS STORE WORD REGISTER TO RAM USING SHORT ADDRESS.": {
     "description": "(Rn) -> [(byte fetched from instruction) << 1]\nAssembler syntax: SMS [xx],Rn  (n=0..15, xx=0..510)\n\nSet the IL prefix flag.  This causes the\nnext instruction byte to be fetched, shifted\nleft one place and used as an address in\nRAM to store the word in Rn.  This means that\nonly even addresses from 0..510 can be\nspecified in this way.  The lo/hi write to\nRAM is buffered, so the processor can\ncontinue if not other RAM writes are\npending.\nAll prefix data is cleared.",

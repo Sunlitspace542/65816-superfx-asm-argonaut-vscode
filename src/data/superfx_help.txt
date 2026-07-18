@@ -814,17 +814,54 @@ z - Set on zero result.
 LSR	$03	LSR	3	3	1
 (ASR,DIV2,ROR,WITH,FROM,TO)
 
-.MERGE Merge High Bytes Of r7 And r8.
-r7.h -> DReg.h, r8.h -> DReg.l
+.MERGE Merge High Bytes Of r7 And r8 (MARIO/GSU1/2) / Call Firmware Function (FX3).
+MARIO/GSU1/GSU2: r7.h -> DReg.h, r8.h -> DReg.l
+FX3: Command number -> r0
 Assembler syntax: MERGE
 
+On MARIO/GSU1/GSU2:
 Merge high bytes of r8 and r7 into the
 destination register.  The destination
 register defaults to be r0 unless it is
 specified using WITH or TO.
 All prefix data is cleared.
+
+On FX3:
+Calls one of 5 firmware-based functions
+based on the value of r0.
+Prefix data is not cleared.
+
+┌───┬──────────────────────────┐
+│ # │ Function Description     │
+├───┼──────────────────────────┤
+│ 0 │ Chunky-To-Planar Third A │
+├───┼──────────────────────────┤
+│ 1 │ Chunky-To-Planar Third B │
+├───┼──────────────────────────┤
+│ 2 │ Chunky-To-Planar Third C │
+├───┼──────────────────────────┤
+│ 3 │ Clear Third A            │
+├───┼──────────────────────────┤
+│ 4 │ Clear Third B            │
+├───┼──────────────────────────┤
+│ 5 │ Clear Third C            │
+└───┴──────────────────────────┘
+
+Any value outside of this range will
+result in no operation.
+
+This function assumes a framebuffer of
+8bpp at $710000 configured as 256x160px.
+The framebuffer is divided into thirds
+(A,B,C) which are 9x18 characters.
+
+The Chunky-To-Planar functions are not
+used when running under the MesenCE
+emulator and have no effect (no-op).
+
 
 000--****
+No flags are affected on FX3.
 s - b7 OR b15
 v - b6 OR b7 OR b14 OR b15
 c - b5 OR b6 OR b7 OR b13 OR b14 OR b15
